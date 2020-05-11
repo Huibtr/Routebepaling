@@ -13,60 +13,60 @@ public class RoutingScreen extends JFrame implements ActionListener {
     private JButton jbBack;
     private ArrayList<Route> routelijst;
     private String[] provincies;
-    private JComboBox provincielijst;
     ComboBoxProvincies provinciesBox;
+    private String provincieNaam;
+    private DefaultTableModel model;
+    private JTable table;
+    private JButton comboBox;
+    private Object[] columnsName;
+    private Object[] rowData;
+
 
     public RoutingScreen(){
-        DBConnection dbConnection = new DBConnection();
-        setLayout(new BorderLayout());
+        if(provincieNaam == null){
+            provincieNaam = "Overijssel";
+        }
         provinciesBox = new ComboBoxProvincies();
-       add(provinciesBox, BorderLayout.PAGE_START);
-       dbConnection.getRouteInfo(provinciesBox.getProvincieNaam());
-
-
-
-
+        add(provinciesBox, BorderLayout.PAGE_START);
+        comboBox = new JButton("Refresh");
+        comboBox.addActionListener(this);
+        add(comboBox, BorderLayout.CENTER);
 
         setSize(530, 500);
         RoutingPanel panel = new RoutingPanel(coordination);
         add(panel, BorderLayout.LINE_START);
-//        jbBack = new JButton("terug");
-//        jbBack.addActionListener(this);
-//        add(jbBack, BorderLayout.PAGE_START);
 
-
-
-        getRouteInfo();
-        JTable table = new JTable();
-        DefaultTableModel model = new DefaultTableModel();
-        Object[] columnsName = new Object[] {
+        getRouteInfo(provincieNaam);
+        table = new JTable();
+        model = new DefaultTableModel();
+        columnsName = new Object[] {
                 "Naam", "Adress", "Stad", "OrderID"
         };
         model.setColumnIdentifiers(columnsName);
-        Object[] rowData = new Object[4];
-        for(int i = 0; i < routelijst.size(); i++){
-            rowData[0] = routelijst.get(i).getName();
-            rowData[1] = routelijst.get(i).getAdress();
-            rowData[2] = routelijst.get(i).getStad();
-            rowData[3] = routelijst.get(i).getOrderId();
-            model.addRow(rowData);
-        }
-        table.setModel(model);
+        maakTabel();
+
         //add the table to the frame
         this.add(new JScrollPane(table), BorderLayout.PAGE_END);
-        this.setTitle("NerdyGadgets - Klantgegevens");
+        this.setTitle("NerdyGadgets - ordergegevens");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
         this.setVisible(true);
-        ListSelectionModel modelclick = table.getSelectionModel();
+        setVisible(true);
+
+
+
+
+        //add the table to the frame
+
     }
 
-    public void getRouteInfo(){
+    public void getRouteInfo(String provincieNaam){
+        System.out.println(provincieNaam);
         routelijst = new ArrayList<>();
         Route route;
         try {
             DBConnection dbConnection = new DBConnection();
-            ResultSet rs = dbConnection.getRouteInfo(provinciesBox.getProvincieNaam());
+            ResultSet rs = dbConnection.getRouteInfo(provincieNaam);
             while(rs.next()){
                 route = new Route(
                         rs.getString("CustomerName"),
@@ -75,6 +75,7 @@ public class RoutingScreen extends JFrame implements ActionListener {
                         rs.getInt("OrderID")
                 );
                 routelijst.add(route);
+
             }
 
 
@@ -86,12 +87,58 @@ public class RoutingScreen extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == jbBack) {
-            LogInScreen LoginScreen = new LogInScreen();
-            dispose();
+        if(e.getSource() == comboBox){
+            if (provincieNaam == null){
+                this.provincieNaam = "Utrecht";
+            }
+            maakTabelLeeg();
+            getRouteInfo(provinciesBox.getProvincieNaam());
+            maakTabel();
+            repaint();
 
         }
 
+
+
+
     }
 
+    public void maakTabel() {
+        try {
+            rowData = new Object[4];
+
+            for(int i = 0; i < routelijst.size(); i++){
+                rowData[0] = routelijst.get(i).getName();
+                rowData[1] = routelijst.get(i).getAdress();
+                rowData[2] = routelijst.get(i).getStad();
+                rowData[3] = routelijst.get(i).getOrderId();
+                model.addRow(rowData);
+
+            }
+            table.setModel(model);
+
+
+        } catch (NullPointerException e) {
+            System.out.println("Nullpointerexeption");
+        }
+
+
+    }
+
+    public void maakTabelLeeg(){
+        routelijst.clear();
+        model.setRowCount(0);
+
+
+
+
+
+
+
+    }
+
+    public void verwijderTabel(){
+
+    }
 }
+
