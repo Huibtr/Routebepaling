@@ -15,7 +15,7 @@ public class DataScreen extends JFrame implements ActionListener {
         setTitle("Nerdy Gadgets - Gegevens inzien");
         JPanel newPanel = new JPanel(new FlowLayout());
 
-        setSize(400,100);
+        setSize(500,100);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JPanel jp = new JPanel();
@@ -24,7 +24,7 @@ public class DataScreen extends JFrame implements ActionListener {
         jp.setBorder(BorderFactory.createTitledBorder("gegevens inzien"));
 
 
-        jbGoBack = new JButton("< terug");
+        jbGoBack = new JButton("\uD83E\uDC80 uitloggen");
         jbGoBack.addActionListener(this);
         jp.add(jbGoBack);
 
@@ -59,7 +59,7 @@ public class DataScreen extends JFrame implements ActionListener {
             dispose();
         } else if(e.getSource() == jbGoBack) {
             dispose();
-            HomeScreen homeScreen = new HomeScreen();
+            LogInScreen logInScreen = new LogInScreen();
         }
     }
 }

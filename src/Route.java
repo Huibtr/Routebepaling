@@ -3,12 +3,14 @@ public class Route {
     private String adress;
     private String stad;
     private int orderId;
+    private int customerID;
 
-    public Route(String name, String adress, String stad, int orderId){
+    public Route(String name, String adress, String stad, int orderId, int customerID){
         this.name = name;
         this.adress = adress;
         this.stad = stad;
         this.orderId = orderId;
+        this.customerID = customerID;
 
     }
 
@@ -26,5 +28,9 @@ public class Route {
 
     public int getOrderId() {
         return orderId;
+    }
+
+    public int getCustomerID() {
+        return customerID;
     }
 }

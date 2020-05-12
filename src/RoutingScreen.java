@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -59,13 +61,38 @@ public class RoutingScreen extends JFrame implements ActionListener {
         this.pack();
         this.setVisible(true);
         setVisible(true);
+        ListSelectionModel modelclick = table.getSelectionModel();
+        modelclick.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent listSelectionEvent) {
+                if (!modelclick.isSelectionEmpty()) {
+                    int customerID = 0;
+                    int selectrow = modelclick.getMinSelectionIndex();
+                    for (int i = 0; i < routelijst.size(); i++) {
+                        if (i == selectrow) {
+                            customerID = routelijst.get(i).getCustomerID();
+                        }
+                    }
+                    try {
+                        if (listSelectionEvent.getValueIsAdjusting()) {
+                            CustomerInfoScreen customerInfoScreen = new CustomerInfoScreen(customerID);
+                        }
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+
+
 
 
 
 
         //add the table to the frame
 
-    }
+
 
     public void getRouteInfo(String provincieNaam){
         System.out.println(provincieNaam);
@@ -81,7 +108,8 @@ public class RoutingScreen extends JFrame implements ActionListener {
                             rs.getString("CustomerName"),
                             rs.getString("DeliveryAddressLine1"),
                             rs.getString("CityName"),
-                            rs.getInt("OrderID")
+                            rs.getInt("OrderID"),
+                            rs.getInt("CustomerID")
                     );
                     routelijst.add(route);
                 }

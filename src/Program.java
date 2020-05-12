@@ -1,11 +1,11 @@
 import javax.swing.*;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 
 public class Program {
     public static void main(String[] args) throws SQLException {
-       HomeScreen homeScreen = new HomeScreen();
-       homeScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        TSP tsp = new TSP();
+        LogInScreen logInScreen = new LogInScreen();
+
 
     }
 }

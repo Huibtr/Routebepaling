@@ -21,7 +21,7 @@ public class QuantityScreen extends JFrame implements ActionListener{
             setLayout(new GridBagLayout());
             GridBagConstraints c = new GridBagConstraints();
 
-            JBterug = new JButton("< terug");
+            JBterug = new JButton("\uD83E\uDC80 terug");
             JBterug.addActionListener(this);
             c.fill = GridBagConstraints.HORIZONTAL;
             c.gridx = 0;
