@@ -9,6 +9,8 @@ public class DBConnection {
     private String password = "";
     private ResultSet result;
 
+
+
     public ResultSet getCustomers(){
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
