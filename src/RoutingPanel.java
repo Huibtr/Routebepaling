@@ -27,7 +27,7 @@ public class RoutingPanel extends JPanel {
         super.paintComponent(g);
         setBackground(Color.white);
         DBConnection dbConnection = new DBConnection();
-        ResultSet result = dbConnection.getCoordinates();
+        ResultSet result = dbConnection.getCoordinates("Utrecht");
 
         while (true){
             try {

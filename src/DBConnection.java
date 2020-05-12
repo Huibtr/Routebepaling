@@ -142,7 +142,7 @@ public class DBConnection {
         return result;
     }
 
-    public ResultSet getCoordinates(){
+    public ResultSet getCoordinates(String provicie){
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection connection = DriverManager.getConnection(url, username, password);
@@ -150,7 +150,7 @@ public class DBConnection {
 
             result = query.executeQuery("SELECT X,Y FROM address_coordinate\n" +
                     "JOIN orders ON orders.CustomerID = address_coordinate.CustomerID\n" +
-                    "WHERE Provincie = \"Utrecht\" ");
+                    "WHERE Provincie = \"" + provicie + "\"");
 
         }
         catch (ClassNotFoundException ex){
