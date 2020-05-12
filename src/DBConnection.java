@@ -165,17 +165,18 @@ public class DBConnection {
         return result;
     }
 
-    public ResultSet getRouteInfo(String provincie){
+    public ResultSet getRouteInfo(int x, int y){
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection connection = DriverManager.getConnection(url, username, password);
             Statement query = connection.createStatement();
 
-            result = query.executeQuery("SELECT customers.CustomerName, customers.DeliveryAddressLine1, cities.CityName, orders.OrderID \n" +
-                    "FROM customers\n" +
+            result = query.executeQuery("SELECT customers.CustomerName, customers.DeliveryAddressLine1, cities.CityName, orders.OrderID\n" +
+                    "FROM customers \n" +
                     "JOIN orders ON customers.CustomerID = orders.CustomerID\n" +
                     "JOIN cities ON customers.DeliveryCityID = cities.CityID\n" +
-                    "WHERE orders.Provincie = " + '\u0022' +  provincie + '\u0022' + ";");
+                    "JOIN address_coordinate ON customers.CustomerID = address_coordinate.CustomerID\n" +
+                    "WHERE X =" + x + " AND Y =" + y );
 
         }
         catch (ClassNotFoundException ex){

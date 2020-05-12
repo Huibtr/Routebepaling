@@ -46,10 +46,11 @@ public class RoutingScreen extends JFrame implements ActionListener {
                 "Naam", "Adress", "Stad", "OrderID"
         };
         model.setColumnIdentifiers(columnsName);
-        maakTabel();
+
         tsp = new TSP();
         tsp.leegcoordinaten();
         hamiltonian(provincieNaam);
+        maakTabel();
 
         //add the table to the frame
         this.add(new JScrollPane(table), BorderLayout.PAGE_END);
@@ -72,19 +73,20 @@ public class RoutingScreen extends JFrame implements ActionListener {
         Route route;
         try {
             DBConnection dbConnection = new DBConnection();
-            ResultSet rs = dbConnection.getRouteInfo(provincieNaam);
-            while(rs.next()){
-                route = new Route(
-                        rs.getString("CustomerName"),
-                        rs.getString("DeliveryAddressLine1"),
-                        rs.getString("CityName"),
-                        rs.getInt("OrderID")
-                );
-                routelijst.add(route);
-
+            if(hamiltonians != null){
+            for (int i = 0; i < hamiltonians.size(); i++){
+                ResultSet rs = dbConnection.getRouteInfo(hamiltonians.get(i).getEindX(), hamiltonians.get(i).getEindY());
+                while(rs.next()) {
+                    route = new Route(
+                            rs.getString("CustomerName"),
+                            rs.getString("DeliveryAddressLine1"),
+                            rs.getString("CityName"),
+                            rs.getInt("OrderID")
+                    );
+                    routelijst.add(route);
+                }
+                }
             }
-
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -109,14 +111,16 @@ public class RoutingScreen extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == comboBox){
-
             maakTabelLeeg();
-            getRouteInfo(provinciesBox.getProvincieNaam());
-            maakTabel();
             hamiltonian(provinciesBox.getProvincieNaam());
             panel.setHamiltonian(hamiltonians);
-
             repaint();
+            getRouteInfo(provinciesBox.getProvincieNaam());
+            maakTabel();
+
+
+
+
         }
     }
     public void maakTabel() {

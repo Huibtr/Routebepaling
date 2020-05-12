@@ -17,7 +17,7 @@ import javax.swing.JPanel;
 
 public class RoutingPanel extends JPanel {
     private Coordination coordination;
-    private int bolGrootte = 5, x = 20, yStart = 20;
+    private int bolGrootte = 10, x = 1, yStart = 1;
     private ArrayList<Hamiltonian> hamiltonian;
 
     public RoutingPanel(Coordination coordination, ArrayList<Hamiltonian> hamiltonian){
@@ -40,8 +40,12 @@ public class RoutingPanel extends JPanel {
            int endX = hamiltonian.get(i).getEindX();
            int endY = hamiltonian.get(i).getEindY();
            g.setColor(Color.black);
-           g.fillOval(beginX,beginY,bolGrootte, bolGrootte);
-           g.fillOval(endX, endY,bolGrootte, bolGrootte);
+           g.fillOval(beginX,beginY,1, 1);
+           g.fillOval(endX, endY,1, 1);
+           g.setColor(Color.blue);
+           g.drawLine(beginX,beginY,endX,endY);
+
+
                 }
             }
         }
