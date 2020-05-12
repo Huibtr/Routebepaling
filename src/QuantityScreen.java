@@ -69,7 +69,9 @@ public class QuantityScreen extends JFrame implements ActionListener{
                             }
                         }
                         try {
-                            QuantityInfoScreen QuantityInfoScreen = new QuantityInfoScreen(productID);
+                            if (listSelectionEvent.getValueIsAdjusting()) {
+                                QuantityInfoScreen QuantityInfoScreen = new QuantityInfoScreen(productID);
+                            }
                         } catch (SQLException e) {
                             e.printStackTrace();
                         }
