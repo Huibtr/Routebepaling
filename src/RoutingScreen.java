@@ -20,6 +20,9 @@ public class RoutingScreen extends JFrame implements ActionListener {
     private JButton comboBox;
     private Object[] columnsName;
     private Object[] rowData;
+    private TSP tsp;
+    private ArrayList<Hamiltonian> hamiltonians;
+    private RoutingPanel panel;
 
 
     public RoutingScreen(){
@@ -33,7 +36,7 @@ public class RoutingScreen extends JFrame implements ActionListener {
         add(comboBox, BorderLayout.CENTER);
 
         setSize(530, 500);
-        RoutingPanel panel = new RoutingPanel(coordination);
+        panel = new RoutingPanel(coordination, hamiltonians);
         add(panel, BorderLayout.LINE_START);
 
         getRouteInfo(provincieNaam);
@@ -44,6 +47,9 @@ public class RoutingScreen extends JFrame implements ActionListener {
         };
         model.setColumnIdentifiers(columnsName);
         maakTabel();
+        tsp = new TSP();
+        tsp.leegcoordinaten();
+        hamiltonian(provincieNaam);
 
         //add the table to the frame
         this.add(new JScrollPane(table), BorderLayout.PAGE_END);
@@ -85,15 +91,31 @@ public class RoutingScreen extends JFrame implements ActionListener {
 
     }
 
+    public void hamiltonian(String provincie){
+        try {
+            tsp = new TSP();
+            if (hamiltonians == null){
+                hamiltonians = tsp.berekenAfstand(provincie);
+            } else {
+                hamiltonians.clear();
+                hamiltonians = tsp.berekenAfstand(provincie);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == comboBox){
-            if (provincieNaam == null){
-                this.provincieNaam = "Utrecht";
-            }
+
             maakTabelLeeg();
             getRouteInfo(provinciesBox.getProvincieNaam());
             maakTabel();
+            hamiltonian(provinciesBox.getProvincieNaam());
+            panel.setHamiltonian(hamiltonians);
+
             repaint();
         }
     }
