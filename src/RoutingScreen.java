@@ -95,46 +95,28 @@ public class RoutingScreen extends JFrame implements ActionListener {
             getRouteInfo(provinciesBox.getProvincieNaam());
             maakTabel();
             repaint();
-
         }
-
-
-
-
     }
-
     public void maakTabel() {
         try {
             rowData = new Object[4];
-
             for(int i = 0; i < routelijst.size(); i++){
                 rowData[0] = routelijst.get(i).getName();
                 rowData[1] = routelijst.get(i).getAdress();
                 rowData[2] = routelijst.get(i).getStad();
                 rowData[3] = routelijst.get(i).getOrderId();
                 model.addRow(rowData);
-
             }
             table.setModel(model);
-
 
         } catch (NullPointerException e) {
             System.out.println("Nullpointerexeption");
         }
-
-
     }
 
     public void maakTabelLeeg(){
         routelijst.clear();
         model.setRowCount(0);
-
-
-
-
-
-
-
     }
 
     public void verwijderTabel(){

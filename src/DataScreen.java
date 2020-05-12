@@ -9,29 +9,40 @@ public class DataScreen extends JFrame implements ActionListener {
     private JButton jbOrders;
     private JButton jbCustomers;
     private JButton jbGoBack;
+    private JLabel labelUsername = new JLabel("Terug");
 
     public DataScreen(){
         setTitle("Nerdy Gadgets - Gegevens inzien");
-        setSize(500, 300);
-        setLayout(new GridLayout(4,1));
+        JPanel newPanel = new JPanel(new FlowLayout());
+
+        setSize(400,100);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        JPanel jp = new JPanel();
+        jp.setPreferredSize(new Dimension(300, 75));
+
+        jp.setBorder(BorderFactory.createTitledBorder("gegevens inzien"));
+
 
         jbGoBack = new JButton("< terug");
         jbGoBack.addActionListener(this);
-        add(jbGoBack);
+        jp.add(jbGoBack);
 
         jbQuantity = new JButton("Voorraad");
         jbQuantity.addActionListener(this);
-        add(jbQuantity);
+        jp.add(jbQuantity);
+
 
         jbOrders = new JButton("Bestellingen");
         jbOrders.addActionListener(this);
-        add(jbOrders);
+        jp.add(jbOrders);
+
 
         jbCustomers = new JButton("Klanten");
         jbCustomers.addActionListener(this);
-        add(jbCustomers);
+        jp.add(jbCustomers);
 
+        add(jp);
         setVisible(true);
     }
 

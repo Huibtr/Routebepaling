@@ -65,7 +65,9 @@ public class OrderScreen extends JFrame implements ActionListener {
                         }
                     }
                     try {
-                        OrderInfoScreen orderInfoScreen = new OrderInfoScreen(orderID);
+                        if (listSelectionEvent.getValueIsAdjusting()) {
+                            OrderInfoScreen orderInfoScreen = new OrderInfoScreen(orderID);
+                        }
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }

@@ -64,7 +64,9 @@ public class CustomerScreen extends JFrame implements ActionListener {
                         }
                     }
                     try {
-                        CustomerInfoScreen customerInfoScreen = new CustomerInfoScreen(customerID);
+                        if (listSelectionEvent.getValueIsAdjusting()) {
+                            CustomerInfoScreen customerInfoScreen = new CustomerInfoScreen(customerID);
+                        }
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }

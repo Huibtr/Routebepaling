@@ -6,6 +6,5 @@ public class Program {
        HomeScreen homeScreen = new HomeScreen();
        homeScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         TSP tsp = new TSP();
-        tsp.berekenAfstand("Utrecht");
     }
 }
