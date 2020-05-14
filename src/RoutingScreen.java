@@ -25,16 +25,12 @@ public class RoutingScreen extends JFrame implements ActionListener {
     private TSP tsp;
     private ArrayList<Hamiltonian> hamiltonians;
     private RoutingPanel panel;
-    private JButton afmelden;
 
 
     public RoutingScreen(){
         if(provincieNaam == null){
             provincieNaam = "Overijssel";
         }
-//        afmelden = new JButton("afmelden");
-//        afmelden.addActionListener(this);
-//        add(afmelden, BorderLayout.CENTER);
         provinciesBox = new ComboBoxProvincies();
         add(provinciesBox, BorderLayout.PAGE_START);
         comboBox = new JButton("Refresh");
@@ -49,7 +45,7 @@ public class RoutingScreen extends JFrame implements ActionListener {
         table = new JTable();
         model = new DefaultTableModel();
         columnsName = new Object[] {
-                "Rijvolgorde","Naam", "Adress", "Stad", "OrderID"
+                "Naam", "Adress", "Stad", "OrderID"
         };
         model.setColumnIdentifiers(columnsName);
 
@@ -60,7 +56,7 @@ public class RoutingScreen extends JFrame implements ActionListener {
 
         //add the table to the frame
         this.add(new JScrollPane(table), BorderLayout.PAGE_END);
-        this.setTitle("NerdyGadgets - routebepaling");
+        this.setTitle("NerdyGadgets - ordergegevens");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
         this.setVisible(true);
@@ -157,13 +153,12 @@ public class RoutingScreen extends JFrame implements ActionListener {
     }
     public void maakTabel() {
         try {
-            rowData = new Object[5];
+            rowData = new Object[4];
             for(int i = 0; i < routelijst.size(); i++){
-                rowData[0] = i + 1;
-                rowData[1] = routelijst.get(i).getName();
-                rowData[2] = routelijst.get(i).getAdress();
-                rowData[3] = routelijst.get(i).getStad();
-                rowData[4] = routelijst.get(i).getOrderId();
+                rowData[0] = routelijst.get(i).getName();
+                rowData[1] = routelijst.get(i).getAdress();
+                rowData[2] = routelijst.get(i).getStad();
+                rowData[3] = routelijst.get(i).getOrderId();
                 model.addRow(rowData);
             }
             table.setModel(model);
