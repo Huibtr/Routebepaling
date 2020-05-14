@@ -29,6 +29,8 @@ public class RoutingPanel extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         setBackground(Color.white);
+        int laatstepuntX = 0;
+        int laatstepuntY = 0;
 
             if(hamiltonian == null){
                 System.out.println("leeg");
@@ -44,9 +46,11 @@ public class RoutingPanel extends JPanel {
            g.fillOval(endX, endY,1, 1);
            g.setColor(Color.blue);
            g.drawLine(beginX,beginY,endX,endY);
-
+           laatstepuntX = endX;
+           laatstepuntY = endY;
 
                 }
+                g.drawLine(laatstepuntX,laatstepuntY, 0, 0);
             }
         }
 

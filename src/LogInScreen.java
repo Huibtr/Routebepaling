@@ -6,14 +6,11 @@ import java.awt.event.ActionListener;
 
 import javax.swing.*;
 
-/**
- * This program demonstrates how to use JPanel in Swing.
- * @author www.codejava.net
- */
+
 public class LogInScreen extends JFrame implements ActionListener {
 
-    private JLabel labelUsername = new JLabel("Vul in gebruikersnaam: ");
-    private JLabel labelPassword = new JLabel("Vul in wachtwoord: ");
+    private JLabel labelUsername = new JLabel("Gebruikersnaam: ");
+    private JLabel labelPassword = new JLabel("Wachtwoord: ");
     private JTextField textUsername = new JTextField(20);
     private JPasswordField fieldPassword = new JPasswordField(20);
     private JButton buttonLogin;

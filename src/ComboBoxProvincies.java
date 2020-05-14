@@ -9,9 +9,9 @@ public class ComboBoxProvincies extends JPanel implements ActionListener {
     private String provincieNaam;
     public ComboBoxProvincies() {
         String[] provincies = new String[]{"Zeeland", "Limburg", "Noord-Brabant", "Friesland", "Noord-Holland", "Zuid-Holland", "Drenthe",
-                "Gelderland", "Flevoland", "Groningen", "Utrecht", "Overijssel"};
+                "Gelderland", "Flevoland", "Groningen", "Utrecht", "Overijssel", "Maak een keuze"};
         JComboBox provincielijst = new JComboBox(provincies);
-        provincielijst.setSelectedIndex(11);
+        provincielijst.setSelectedIndex(12);
         provincielijst.addActionListener(this);
         add(provincielijst);
 
