@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import static java.lang.Math.*;
 
 public class TSP {
+    private int maxDeliveryDistance = 1000;
     public ArrayList<Coordination> listCoordinates;
     //MST algoritme
     ArrayList<Integer> isReached;
@@ -65,7 +66,6 @@ public class TSP {
 
 
     public ArrayList<Hamiltonian> berekenAfstand(String provicie) throws SQLException {
-        System.out.println("test" + provicie);
         addcordinaten(provicie);
         //prim algoritme
         double distance;
@@ -76,7 +76,7 @@ public class TSP {
 
         //1. Prim algritme
         for (int eerste = 0; eerste < listCoordinates.size() - 1; eerste++) {
-            distance = 1000;
+            distance = maxDeliveryDistance;
             for (int reached = 0; reached < isReached.size(); reached++) {
                 skip = false;
                 for (int index = 0; index < listCoordinates.size(); index++) {
@@ -136,22 +136,39 @@ public class TSP {
 
         //3. Perfect Matching
         ArrayList<PerfectMatch> savePerfectMatch = new ArrayList<>();
-        for (int alleIndexgebruiker = 0; alleIndexgebruiker < (perfectMatching.size()); alleIndexgebruiker++) {
+        System.out.println("\n//3. Perfect Matching");
+        for (int alleIndexgebruiker = (perfectMatching.size()/2); alleIndexgebruiker < (perfectMatching.size()); alleIndexgebruiker--) {
             double kortsteafstand = 1000;
             int bIndex = 0;
             int eIndex = 0;
             int beginIndex = 0;
             int endIndex = 0;
             for (int perfectIndex = 0; perfectIndex < perfectMatching.size(); perfectIndex++) {
+
+                boolean isMatch = false;
                 for (int i = 0; i < perfectMatching.size(); i++) {
+
                     if (perfectIndex != i) {
                         double afstand = getDistance(perfectMatching.get(perfectIndex), perfectMatching.get(i));
                         if (afstand < kortsteafstand) {
-                            kortsteafstand = afstand;
-                            bIndex = perfectIndex;
-                            eIndex = i;
-                            beginIndex = perfectMatching.get(perfectIndex);
-                            endIndex = perfectMatching.get(i);
+
+                            for(int isMST = 0; isMST< listMst.size(); isMST++){
+                                if(listMst.get(isMST).getBeginIndex() == perfectMatching.get(perfectIndex) && listMst.get(isMST).getEndIndex() == perfectMatching.get(i)){
+                                    isMatch =true;
+                                    break;
+                                }
+                                else if(listMst.get(isMST).getEndIndex() == perfectMatching.get(perfectIndex) && listMst.get(isMST).getBeginIndex() == perfectMatching.get(i)){
+                                    isMatch =true;
+                                    break;
+                                }
+                            }
+                            if (isMatch == false){
+                                kortsteafstand = afstand;
+                                bIndex = perfectIndex;
+                                eIndex = i;
+                                beginIndex = perfectMatching.get(perfectIndex);
+                                endIndex = perfectMatching.get(i);
+                            }
                         }
                     }
                 }
@@ -161,64 +178,182 @@ public class TSP {
             System.out.println(beginIndex + "->" + endIndex + " = " + kortsteafstand);
 
             perfectMatching.remove(bIndex);
-            perfectMatching.remove(eIndex - 1);
+            if(eIndex == 0){
+                perfectMatching.remove(eIndex);
+            }else {
+                perfectMatching.remove(eIndex - 1);
+            }
+
 
         }
 
 
         //Hamiltonian Circuit
-        int beginIndex = 0;
-        boolean check = false;
-        boolean is_perfectmatch = false;
-        ArrayList<Integer> reached = new ArrayList<>();
-        for (int hamiltonian = 0; hamiltonian < listMst.size(); hamiltonian++) {
-            check = false;
-            for (int perfectmatch = 0; perfectmatch < savePerfectMatch.size(); perfectmatch++) {
-                int pfBegin = savePerfectMatch.get(perfectmatch).getBeginIndex();
-                int pfEnd = savePerfectMatch.get(perfectmatch).getEndIndex();
-
-                if (is_perfectmatch != true) {
-                    if (beginIndex == pfBegin) {
-                        PerfectMatch perfectMatch = new PerfectMatch(pfBegin, pfEnd);
-                        reached.add(pfBegin);
-                        beginIndex = pfEnd;
+        System.out.println("\nHamiltonian Circuit ");
+        int puntVanBezorger = 0;
+        ArrayList<Integer> geweesteIndexen = new ArrayList<>();
+        for(int rijLangAlleIndexen = 0; rijLangAlleIndexen < listCoordinates.size(); rijLangAlleIndexen ++){
+            boolean isPerfectMatch = false;
+            boolean setPerfectMatch = false;
+            for(int isErEenPerfectMatch = 0; isErEenPerfectMatch < savePerfectMatch.size(); isErEenPerfectMatch ++ ){
+                if(puntVanBezorger == savePerfectMatch.get(isErEenPerfectMatch).getBeginIndex() ){
+                    if(geweesteIndexen.size() != 0){
+                        for(int i = 0; i < geweesteIndexen.size(); i++){
+                            if(savePerfectMatch.get(isErEenPerfectMatch).getEndIndex() == geweesteIndexen.get(i)){
+                                setPerfectMatch = true;
+                                break;
+                            }
+                        }
+                        if(setPerfectMatch == false){
+                                System.out.println( savePerfectMatch.get(isErEenPerfectMatch).getBeginIndex() +" naar " + savePerfectMatch.get(isErEenPerfectMatch).getEndIndex());
+                                PerfectMatch perfectMatch = new PerfectMatch(savePerfectMatch.get(isErEenPerfectMatch).getBeginIndex(),savePerfectMatch.get(isErEenPerfectMatch).getEndIndex() );
+                                listHamiltonian.add(perfectMatch);
+                                puntVanBezorger = savePerfectMatch.get(isErEenPerfectMatch).getEndIndex();
+                                geweesteIndexen.add(savePerfectMatch.get(isErEenPerfectMatch).getBeginIndex());
+                                isPerfectMatch = true;
+                        }
+                    }
+                    else {
+                        System.out.println( savePerfectMatch.get(isErEenPerfectMatch).getBeginIndex() +" naar " + savePerfectMatch.get(isErEenPerfectMatch).getEndIndex());
+                        PerfectMatch perfectMatch = new PerfectMatch(savePerfectMatch.get(isErEenPerfectMatch).getBeginIndex(),savePerfectMatch.get(isErEenPerfectMatch).getEndIndex() );
                         listHamiltonian.add(perfectMatch);
-                        is_perfectmatch = true;
-                        check = true;
-                    } else if (beginIndex == pfEnd) {
-                        PerfectMatch perfectMatch = new PerfectMatch(pfEnd, pfBegin);
-                        reached.add(pfEnd);
-                        beginIndex = pfBegin;
+                        puntVanBezorger = savePerfectMatch.get(isErEenPerfectMatch).getEndIndex();
+                        geweesteIndexen.add(savePerfectMatch.get(isErEenPerfectMatch).getBeginIndex());
+                        isPerfectMatch = true;
+                        break;
+                    }
+                }
+                else if(puntVanBezorger == savePerfectMatch.get(isErEenPerfectMatch).getEndIndex()){
+                    if(geweesteIndexen.size() != 0){
+                        for(int i = 0; i < geweesteIndexen.size(); i++){
+                            if(savePerfectMatch.get(isErEenPerfectMatch).getBeginIndex() == geweesteIndexen.get(i)){
+                                setPerfectMatch = true;
+                                break;
+                            }
+                        }
+                        if (setPerfectMatch == false){
+                            System.out.println( savePerfectMatch.get(isErEenPerfectMatch).getEndIndex() + " naar " + savePerfectMatch.get(isErEenPerfectMatch).getBeginIndex());
+                            PerfectMatch perfectMatch = new PerfectMatch(savePerfectMatch.get(isErEenPerfectMatch).getEndIndex(),savePerfectMatch.get(isErEenPerfectMatch).getBeginIndex() );
+                            listHamiltonian.add(perfectMatch);
+                            puntVanBezorger = savePerfectMatch.get(isErEenPerfectMatch).getBeginIndex();
+                            geweesteIndexen.add(savePerfectMatch.get(isErEenPerfectMatch).getEndIndex());
+                            isPerfectMatch = true;
+                        }
+                    }
+                    else {
+                        System.out.println(  savePerfectMatch.get(isErEenPerfectMatch).getEndIndex() + " naar " + savePerfectMatch.get(isErEenPerfectMatch).getBeginIndex());
+                        PerfectMatch perfectMatch = new PerfectMatch(savePerfectMatch.get(isErEenPerfectMatch).getEndIndex(),savePerfectMatch.get(isErEenPerfectMatch).getBeginIndex() );
                         listHamiltonian.add(perfectMatch);
-                        is_perfectmatch = true;
-                        check = true;
+                        puntVanBezorger = savePerfectMatch.get(isErEenPerfectMatch).getBeginIndex();
+                        geweesteIndexen.add(savePerfectMatch.get(isErEenPerfectMatch).getEndIndex());
+                        isPerfectMatch = true;
+                        break;
                     }
                 }
             }
 
-            if (check == false) {
-                for (int mst = 0; mst < listMst.size(); mst++) {
-                    int pfBegin = listMst.get(mst).getBeginIndex();
-                    int pfEnd = listMst.get(mst).getEndIndex();
 
-                    if (check == false) {
-                        if (beginIndex == pfBegin) {
-                            PerfectMatch perfectMatch = new PerfectMatch(pfBegin, pfEnd);
-                            reached.add(pfBegin);
-                            beginIndex = pfEnd;
-                            is_perfectmatch = false;
+            // hij moet nog gebreakt worden!!
+            // daarnaast nog een check of die in de lijst van geweesteIndexen zit
+            if(isPerfectMatch != true) {
+                boolean setMST = false;
+                for(int loopdoorMST = 0; loopdoorMST < listMst.size(); loopdoorMST++){
+                    if(puntVanBezorger == listMst.get(loopdoorMST).getBeginIndex()){
+                        for (int i = 0; i < geweesteIndexen.size(); i++){
+                            if (listMst.get(loopdoorMST).getEndIndex() == geweesteIndexen.get(i)) {
+                                System.out.println(listMst.get(loopdoorMST).getEndIndex());
+                                setMST = true;
+                                break;
+                            }
+                        }
+                        if (setMST == false){
+                            System.out.println( listMst.get(loopdoorMST).getBeginIndex() +" naar " + listMst.get(loopdoorMST).getEndIndex());
+                            PerfectMatch perfectMatch = new PerfectMatch(listMst.get(loopdoorMST).getBeginIndex(),listMst.get(loopdoorMST).getEndIndex());
                             listHamiltonian.add(perfectMatch);
-                        } else if (beginIndex == pfEnd) {
-                            PerfectMatch perfectMatch = new PerfectMatch(pfEnd, pfBegin);
-                            reached.add(pfEnd);
-                            beginIndex = pfBegin;
-                            is_perfectmatch = false;
+                            puntVanBezorger = listMst.get(loopdoorMST).getEndIndex();
+                            geweesteIndexen.add(listMst.get(loopdoorMST).getBeginIndex());
+                            break;
+                        }else {
+                            // dichtbijzijnde afstand
+                            double kleinsteAfstand = 1000;
+                            int goToIndex = 0;
+                            for(int test = 0; test < listMst.size(); test++){
+                                boolean isAlGeweest = false;
+                                if(listMst.get(loopdoorMST).getBeginIndex() != listMst.get(test).getEndIndex()){
+                                    for (int algeweest = 0; algeweest < geweesteIndexen.size(); algeweest++){
+                                        if(geweesteIndexen.get(algeweest) ==  listMst.get(test).getEndIndex()){
+                                            isAlGeweest = true;
+                                            break;
+                                        }
+                                    }
+                                    if(isAlGeweest == false){
+                                        double afstand = getDistance(listMst.get(loopdoorMST).getBeginIndex(), listMst.get(test).getEndIndex());
+                                        if(afstand < kleinsteAfstand){
+                                            kleinsteAfstand = afstand;
+                                            goToIndex = listMst.get(test).getEndIndex();
+                                        }
+                                    }
+                                }
+                            }
+
+                            System.out.println( listMst.get(loopdoorMST).getEndIndex() +" naar " + goToIndex);
+                            // kijk of hier nog een fout in zit 301 miss getEndIndex;
+                            PerfectMatch perfectMatch = new PerfectMatch(listMst.get(loopdoorMST).getBeginIndex(),goToIndex);
                             listHamiltonian.add(perfectMatch);
+                            puntVanBezorger = goToIndex;
+                            geweesteIndexen.add(listMst.get(loopdoorMST).getEndIndex());
+                            break;
+                        }
+                    }
+                    else if (puntVanBezorger == listMst.get(loopdoorMST).getEndIndex()){
+                        for (int i = 0; i < geweesteIndexen.size(); i++){
+                            if (listMst.get(loopdoorMST).getBeginIndex() == geweesteIndexen.get(i)) {
+                                setMST = true;
+                                break;
+                            }
+                        }
+                        if(setMST == false){
+                            System.out.println( listMst.get(loopdoorMST).getEndIndex() +" naar " + listMst.get(loopdoorMST).getBeginIndex());
+                            PerfectMatch perfectMatch = new PerfectMatch(listMst.get(loopdoorMST).getEndIndex(),listMst.get(loopdoorMST).getBeginIndex());
+                            listHamiltonian.add(perfectMatch);
+                            puntVanBezorger = listMst.get(loopdoorMST).getBeginIndex();
+                            geweesteIndexen.add(listMst.get(loopdoorMST).getEndIndex());
+                            break;
+                        }else{
+                            // dichtbijzijnde afstand
+                            double kleinsteAfstand = 1000;
+                            int goToIndex = 0;
+                            for(int test = 0; test < listMst.size(); test++){
+                                boolean isAlGeweest = false;
+                                if(listMst.get(loopdoorMST).getEndIndex() != listMst.get(test).getBeginIndex()){
+                                    for (int algeweest = 0; algeweest < geweesteIndexen.size(); algeweest++){
+                                        if(geweesteIndexen.get(algeweest) ==  listMst.get(test).getBeginIndex()){
+                                            isAlGeweest = true;
+                                            break;
+                                        }
+                                    }
+                                    if(isAlGeweest == false){
+                                        double afstand = getDistance(listMst.get(loopdoorMST).getEndIndex(), listMst.get(test).getBeginIndex());
+                                        if(afstand < kleinsteAfstand){
+                                            kleinsteAfstand = afstand;
+                                            goToIndex = listMst.get(test).getBeginIndex();
+                                        }
+                                    }
+                                }
+                            }
+
+                            System.out.println( listMst.get(loopdoorMST).getEndIndex() +" naar " + goToIndex);
+                            PerfectMatch perfectMatch = new PerfectMatch(listMst.get(loopdoorMST).getEndIndex(),goToIndex);
+                            listHamiltonian.add(perfectMatch);
+                            puntVanBezorger = goToIndex;
+                            geweesteIndexen.add(listMst.get(loopdoorMST).getEndIndex());
+                            break;
+
                         }
                     }
                 }
-            }
 
+            }
         }
 
         for (int fillPerfectRoute = 0; fillPerfectRoute < listHamiltonian.size(); fillPerfectRoute++) {
@@ -256,4 +391,3 @@ public class TSP {
         return distance;
     }
 }
-
