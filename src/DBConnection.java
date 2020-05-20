@@ -171,12 +171,31 @@ public class DBConnection {
             Connection connection = DriverManager.getConnection(url, username, password);
             Statement query = connection.createStatement();
 
-            result = query.executeQuery("SELECT customers.CustomerName, customers.DeliveryAddressLine1, cities.CityName, orders.OrderID, customers.customerID\n" +
+            result = query.executeQuery("SELECT customers.CustomerName, customers.DeliveryAddressLine2, cities.CityName, orders.OrderID, customers.customerID\n" +
                     "FROM customers \n" +
                     "JOIN orders ON customers.CustomerID = orders.CustomerID\n" +
                     "JOIN cities ON customers.DeliveryCityID = cities.CityID\n" +
                     "JOIN address_coordinate ON customers.CustomerID = address_coordinate.CustomerID\n" +
                     "WHERE X =" + x + " AND Y =" + y );
+
+        }
+        catch (ClassNotFoundException ex){
+            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE,null, ex);
+        }
+        catch (SQLException ex){
+            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE,null, ex);
+            ex.printStackTrace();
+        }
+        return result;
+    }
+
+    public ResultSet getOrdersFromCustomer(int customerID){
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection connection = DriverManager.getConnection(url, username, password);
+            Statement query = connection.createStatement();
+
+            result = query.executeQuery("SELECT OrderID FROM orders WHERE CustomerID = " + customerID + " ORDER BY OrderID");
 
         }
         catch (ClassNotFoundException ex){

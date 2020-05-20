@@ -45,7 +45,7 @@ public class RoutingScreen extends JFrame implements ActionListener {
         table = new JTable();
         model = new DefaultTableModel();
         columnsName = new Object[] {
-                "Naam", "Adress", "Stad", "OrderID"
+                "Volgorde", "Naam", "Adress", "Stad"
         };
         model.setColumnIdentifiers(columnsName);
 
@@ -69,13 +69,14 @@ public class RoutingScreen extends JFrame implements ActionListener {
                     int customerID = 0;
                     int selectrow = modelclick.getMinSelectionIndex();
                     for (int i = 0; i < routelijst.size(); i++) {
+                        System.out.println(routelijst.get(i).getCustomerID());
                         if (i == selectrow) {
                             customerID = routelijst.get(i).getCustomerID();
                         }
                     }
                     try {
                         if (listSelectionEvent.getValueIsAdjusting()) {
-                            CustomerInfoScreen customerInfoScreen = new CustomerInfoScreen(customerID);
+                            CustomerInfoScreen customerInfoScreen = new CustomerInfoScreen(customerID, "RoutingScreen");
                         }
                     } catch (SQLException e) {
                         e.printStackTrace();
@@ -106,7 +107,7 @@ public class RoutingScreen extends JFrame implements ActionListener {
                 while(rs.next()) {
                     route = new Route(
                             rs.getString("CustomerName"),
-                            rs.getString("DeliveryAddressLine1"),
+                            rs.getString("DeliveryAddressLine2"),
                             rs.getString("CityName"),
                             rs.getInt("OrderID"),
                             rs.getInt("CustomerID")
@@ -154,12 +155,19 @@ public class RoutingScreen extends JFrame implements ActionListener {
     public void maakTabel() {
         try {
             rowData = new Object[4];
+            ArrayList<Integer> CustomerIDIsAlGeweest = new ArrayList<Integer>();
+            int volgNummer = 1;
+
             for(int i = 0; i < routelijst.size(); i++){
-                rowData[0] = routelijst.get(i).getName();
-                rowData[1] = routelijst.get(i).getAdress();
-                rowData[2] = routelijst.get(i).getStad();
-                rowData[3] = routelijst.get(i).getOrderId();
-                model.addRow(rowData);
+                if (CustomerIDIsAlGeweest.contains(routelijst.get(i).getCustomerID()) == false) {
+                    rowData[0] = volgNummer;
+                    rowData[1] = routelijst.get(i).getName();
+                    rowData[2] = routelijst.get(i).getAdress();
+                    rowData[3] = routelijst.get(i).getStad();
+                    model.addRow(rowData);
+                    CustomerIDIsAlGeweest.add(routelijst.get(i).getCustomerID());
+                    volgNummer++;
+                }
             }
             table.setModel(model);
 
