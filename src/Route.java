@@ -5,11 +5,10 @@ public class Route {
     private int orderId;
     private int customerID;
 
-    public Route(String name, String adress, String stad, int orderId, int customerID){
+    public Route(String name, String adress, String stad, int customerID){
         this.name = name;
         this.adress = adress;
         this.stad = stad;
-        this.orderId = orderId;
         this.customerID = customerID;
 
     }
@@ -24,10 +23,6 @@ public class Route {
 
     public String getStad() {
         return stad;
-    }
-
-    public int getOrderId() {
-        return orderId;
     }
 
     public int getCustomerID() {

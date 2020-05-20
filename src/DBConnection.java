@@ -171,7 +171,7 @@ public class DBConnection {
             Connection connection = DriverManager.getConnection(url, username, password);
             Statement query = connection.createStatement();
 
-            result = query.executeQuery("SELECT customers.CustomerName, customers.DeliveryAddressLine2, cities.CityName, orders.OrderID, customers.customerID\n" +
+            result = query.executeQuery("SELECT DISTINCT customers.CustomerName, customers.DeliveryAddressLine2, cities.CityName, customers.customerID\n" +
                     "FROM customers \n" +
                     "JOIN orders ON customers.CustomerID = orders.CustomerID\n" +
                     "JOIN cities ON customers.DeliveryCityID = cities.CityID\n" +

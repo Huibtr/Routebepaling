@@ -67,9 +67,9 @@ public class RoutingScreen extends JFrame implements ActionListener {
             public void valueChanged(ListSelectionEvent listSelectionEvent) {
                 if (!modelclick.isSelectionEmpty()) {
                     int customerID = 0;
-                    int selectrow = modelclick.getMinSelectionIndex();
+                    int selectrow = Integer.parseInt(table.getValueAt(table.getSelectedRow(), 0).toString()) -1;
+                    System.out.println(routelijst.size());
                     for (int i = 0; i < routelijst.size(); i++) {
-                        System.out.println(routelijst.get(i).getCustomerID());
                         if (i == selectrow) {
                             customerID = routelijst.get(i).getCustomerID();
                         }
@@ -105,15 +105,14 @@ public class RoutingScreen extends JFrame implements ActionListener {
             for (int i = 0; i < hamiltonians.size(); i++){
                 ResultSet rs = dbConnection.getRouteInfo(hamiltonians.get(i).getEindX(), hamiltonians.get(i).getEindY());
                 while(rs.next()) {
-                    route = new Route(
-                            rs.getString("CustomerName"),
-                            rs.getString("DeliveryAddressLine2"),
-                            rs.getString("CityName"),
-                            rs.getInt("OrderID"),
-                            rs.getInt("CustomerID")
-                    );
-                    routelijst.add(route);
-                }
+                        route = new Route(
+                                rs.getString("CustomerName"),
+                                rs.getString("DeliveryAddressLine2"),
+                                rs.getString("CityName"),
+                                rs.getInt("CustomerID")
+                        );
+                        routelijst.add(route);
+                    }
                 }
             }
         } catch (SQLException e) {
@@ -155,19 +154,16 @@ public class RoutingScreen extends JFrame implements ActionListener {
     public void maakTabel() {
         try {
             rowData = new Object[4];
-            ArrayList<Integer> CustomerIDIsAlGeweest = new ArrayList<Integer>();
+
             int volgNummer = 1;
 
             for(int i = 0; i < routelijst.size(); i++){
-                if (CustomerIDIsAlGeweest.contains(routelijst.get(i).getCustomerID()) == false) {
                     rowData[0] = volgNummer;
                     rowData[1] = routelijst.get(i).getName();
                     rowData[2] = routelijst.get(i).getAdress();
                     rowData[3] = routelijst.get(i).getStad();
                     model.addRow(rowData);
-                    CustomerIDIsAlGeweest.add(routelijst.get(i).getCustomerID());
                     volgNummer++;
-                }
             }
             table.setModel(model);
 
