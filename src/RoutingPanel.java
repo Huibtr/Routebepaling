@@ -30,23 +30,28 @@ public class RoutingPanel extends JPanel {
         super.paintComponent(g);
         setBackground(Color.white);
 
+        int endX = 0;
+        int endY = 0;
+        int beginX = 0;
+        int beginY = 0;
             if(hamiltonian == null){
                 System.out.println("leeg");
             } else {
                 for (int i = 0; i < hamiltonian.size(); i++) {
                     System.out.println(hamiltonian);
-           int beginX = hamiltonian.get(i).getBeginX();
-           int beginY = hamiltonian.get(i).getBeginY();
-           int endX = hamiltonian.get(i).getEindX();
-           int endY = hamiltonian.get(i).getEindY();
-           g.setColor(Color.black);
-           g.fillOval(beginX,beginY,1, 1);
-           g.fillOval(endX, endY,1, 1);
-           g.setColor(Color.blue);
-           g.drawLine(beginX,beginY,endX,endY);
+                   beginX = hamiltonian.get(i).getBeginX();
+                   beginY = hamiltonian.get(i).getBeginY();
+                   endX = hamiltonian.get(i).getEindX();
+                   endY = hamiltonian.get(i).getEindY();
+                   g.setColor(Color.black);
+                   g.fillOval(beginX,beginY,1, 1);
+                   g.fillOval(endX, endY,1, 1);
+                   g.setColor(Color.blue);
+                   g.drawLine(beginX,beginY,endX,endY);
 
 
                 }
+                g.drawLine(0,0, beginX,beginY);
             }
         }
 
