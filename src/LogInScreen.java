@@ -3,6 +3,9 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.swing.*;
 
@@ -12,8 +15,8 @@ import javax.swing.*;
  */
 public class LogInScreen extends JFrame implements ActionListener {
 
-    private JLabel labelUsername = new JLabel("Vul in gebruikersnaam: ");
-    private JLabel labelPassword = new JLabel("Vul in wachtwoord: ");
+    private JLabel labelUsername = new JLabel("Gebruikersnaam: ");
+    private JLabel labelPassword = new JLabel("Wachtwoord: ");
     private JTextField textUsername = new JTextField(20);
     private JPasswordField fieldPassword = new JPasswordField(20);
     private JButton buttonLogin;
@@ -66,20 +69,38 @@ public class LogInScreen extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
-        String wachtwoordBezorging = "Bezorging2020";
-        String wachtwoordLogistiek = "Logistiek2020";
+        DBConnection dbConnection = new DBConnection();
+        String password = fieldPassword.getText();
+        String hashPassword = String.valueOf(password.hashCode());
+        System.out.println(hashPassword);
+        String checkPassword = "";
+        int afdeling = 0;
+        String username = "";
 
-        if(actionEvent.getSource() == buttonLogin){
-            if(fieldPassword.getText().equals(wachtwoordBezorging)){
-                RoutingScreen routingScreen= new RoutingScreen();
-                dispose();
-            } else if (fieldPassword.getText().equals(wachtwoordLogistiek)){
-                DataScreen dataScreen = new DataScreen();
-                dispose();
+        try {
+            ResultSet rsHashPassword = dbConnection.getPassword(hashPassword);
+            while (rsHashPassword.next()) {
+                checkPassword = rsHashPassword.getString("Password");
+                afdeling = rsHashPassword.getInt("department");
+                username = rsHashPassword.getString("Username");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        if (actionEvent.getSource() == buttonLogin) {
+            System.out.println(hashPassword + " " + checkPassword);
+            if (hashPassword.equals(checkPassword) && username.equals(textUsername.getText())){
+                if (afdeling == 1) {
+                    RoutingScreen routingScreen = new RoutingScreen();
+                    dispose();
+                } else if (afdeling == 2) {
+                    DataScreen data = new DataScreen();
+                    dispose();
+                }
             } else {
-                JOptionPane.showMessageDialog(null, "Wachtwoord incorrect");
+                JOptionPane.showMessageDialog(null, "Wachtwoord of gebruikersnaam incorrect");
+            }
+
             }
         }
-
     }
-}

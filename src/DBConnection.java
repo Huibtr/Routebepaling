@@ -9,6 +9,25 @@ public class DBConnection {
     private String password = "";
     private ResultSet result;
 
+    public ResultSet getPassword(String hashPassword){
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection connection = DriverManager.getConnection(url, username, password);
+            Statement query = connection.createStatement();
+
+            result = query.executeQuery("select Password, department, Username from employee where Password = \"" + hashPassword + "\" ;");
+
+        }
+        catch (ClassNotFoundException ex){
+            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE,null, ex);
+        }
+        catch (SQLException ex){
+            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE,null, ex);
+            ex.printStackTrace();
+        }
+        return result;
+    }
+
 
 
     public ResultSet getCustomers(){
@@ -189,6 +208,7 @@ public class DBConnection {
         return result;
     }
 
+
     public ResultSet getOrdersFromCustomer(int customerID){
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -207,5 +227,6 @@ public class DBConnection {
         }
         return result;
     }
+
 }
 

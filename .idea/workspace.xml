@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="bd31bdd9-3853-4470-8703-3081dcf29e63" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1btOZlFtLzhPKKNHqflC975EYr4" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../Downloads/mysql-connector-java-8.0.19/mysql-connector-java-8.0.19.jar!/" />
+    <property name="project.structure.last.edited" value="Libraries" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.0" />
+  </component>
+  <component name="RunManager" selected="Application.Program">
+    <configuration name="Program" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Program" />
+      <module name="Routebepaling" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Testing" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Testing" />
+      <module name="Routebepaling" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.Program" />
+        <item itemvalue="Application.Testing" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="bd31bdd9-3853-4470-8703-3081dcf29e63" name="Default Changelist" comment="" />
+      <created>1589447981340</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1589447981340</updated>
+      <workItem from="1589447984707" duration="5607000" />
+      <workItem from="1589530779256" duration="5702000" />
+      <workItem from="1589793999641" duration="15383000" />
+      <workItem from="1590151939617" duration="283000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="389" y="105" key="FileChooserDialogImpl" timestamp="1589534854400">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state x="389" y="105" key="FileChooserDialogImpl/0.0.1366.728@0.0.1366.728" timestamp="1589534854400" />
+    <state width="1320" height="178" key="GridCell.Tab.0.bottom" timestamp="1589961018963">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="1320" height="178" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1589961018963" />
+    <state width="1320" height="178" key="GridCell.Tab.0.center" timestamp="1589961018962">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="1320" height="178" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1589961018962" />
+    <state width="1320" height="178" key="GridCell.Tab.0.left" timestamp="1589961018962">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="1320" height="178" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1589961018962" />
+    <state width="1320" height="178" key="GridCell.Tab.0.right" timestamp="1589961018962">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="1320" height="178" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1589961018962" />
+    <state x="163" y="0" key="SettingsEditor" timestamp="1589893777923">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state x="163" y="0" key="SettingsEditor/0.0.1366.728@0.0.1366.728" timestamp="1589893777923" />
+    <state x="378" y="187" key="com.intellij.ide.util.TipDialog" timestamp="1590152024721">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state x="378" y="187" key="com.intellij.ide.util.TipDialog/0.0.1366.728@0.0.1366.728" timestamp="1590152024721" />
+    <state x="346" y="49" width="672" height="678" key="search.everywhere.popup" timestamp="1589794260874">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state x="346" y="49" width="672" height="678" key="search.everywhere.popup/0.0.1366.728@0.0.1366.728" timestamp="1589794260874" />
+  </component>
+</project>
