@@ -14,6 +14,8 @@ import java.util.Vector;
 public class QuantityScreen extends JFrame implements ActionListener{
     private ArrayList<Quantity> quantities;
     private JButton JBterug;
+    private JTextField JTinputSearchCustomerID;
+    private JButton JBSearch;
 
     public QuantityScreen() {
             getQuantity();
@@ -27,6 +29,21 @@ public class QuantityScreen extends JFrame implements ActionListener{
             c.gridx = 0;
             c.gridy = 0;
             add(JBterug, c);
+
+        JLabel JLSearch = new JLabel("Zoeken op productID: ");
+        add(JLSearch);
+
+        JTinputSearchCustomerID = new JTextField();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.ipady = 1;
+        c.gridx = 3;
+        c.gridy = 0;
+        add(JTinputSearchCustomerID, c);
+
+
+        JBSearch = new JButton("Zoek product");
+        JBSearch.addActionListener(this);
+        add(JBSearch);
 
             JTable table = new JTable();
             DefaultTableModel model = new DefaultTableModel();
@@ -107,6 +124,28 @@ public class QuantityScreen extends JFrame implements ActionListener{
         if (e.getSource() == JBterug) {
             dispose();
             DataScreen dataScreen = new DataScreen();
+        }
+        if (e.getSource() == JBSearch) {
+            boolean heeftSchermGeopend = false;
+            boolean foutmelding = false;
+            try {
+                for (Quantity q : quantities) {
+                    if (q.getStockItemID() == Integer.parseInt(JTinputSearchCustomerID.getText())) {
+                        try {
+                            QuantityInfoScreen quantityInfoScreen = new QuantityInfoScreen(Integer.parseInt(JTinputSearchCustomerID.getText()));
+                            heeftSchermGeopend = true;
+                        } catch (SQLException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                }
+            }catch (NumberFormatException nfe) {
+                JOptionPane.showMessageDialog(null, "Getal invoeren!", "Foutmelding", JOptionPane.ERROR_MESSAGE);
+                foutmelding = true;
+            }
+            if (heeftSchermGeopend == false && foutmelding == false) {
+                JOptionPane.showMessageDialog(null, "Verkeerde invoer!", "Foutmelding", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 }

@@ -11,6 +11,8 @@ import java.util.ArrayList;
 public class CustomerScreen extends JFrame implements ActionListener {
     private  ArrayList<Customer> customers;
     private JButton JBterug;
+    private JTextField JTinputSearchCustomerID;
+    private JButton JBSearch;
 
     public CustomerScreen() {
         getCustomer();
@@ -24,6 +26,21 @@ public class CustomerScreen extends JFrame implements ActionListener {
         c.gridx = 0;
         c.gridy = 0;
         add(JBterug, c);
+
+        JLabel JLSearch = new JLabel("Zoeken op klantID: ");
+        add(JLSearch);
+
+        JTinputSearchCustomerID = new JTextField();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.ipady = 1;
+        c.gridx = 3;
+        c.gridy = 0;
+        add(JTinputSearchCustomerID, c);
+
+
+        JBSearch = new JButton("Zoek klant");
+        JBSearch.addActionListener(this);
+        add(JBSearch);
 
         JTable table = new JTable();
         DefaultTableModel model = new DefaultTableModel();
@@ -101,6 +118,28 @@ public class CustomerScreen extends JFrame implements ActionListener {
         if (e.getSource() == JBterug) {
             dispose();
             DataScreen dataScreen = new DataScreen();
+        }
+        if (e.getSource() == JBSearch) {
+            boolean heeftSchermGeopend = false;
+            boolean foutmelding = false;
+            try {
+                    for (Customer c : customers) {
+                            if (c.getCustomerID() == Integer.parseInt(JTinputSearchCustomerID.getText())) {
+                                try {
+                                    CustomerInfoScreen customerInfoScreen = new CustomerInfoScreen(Integer.parseInt(JTinputSearchCustomerID.getText()), "CustomerScreen");
+                                    heeftSchermGeopend = true;
+                                } catch (SQLException ex) {
+                                    ex.printStackTrace();
+                                }
+                            }
+                }
+            }catch (NumberFormatException nfe) {
+                JOptionPane.showMessageDialog(null, "Getal invoeren!", "Foutmelding", JOptionPane.ERROR_MESSAGE);
+                foutmelding = true;
+            }
+                    if (heeftSchermGeopend == false && foutmelding == false) {
+                        JOptionPane.showMessageDialog(null, "Verkeerde invoer!", "Foutmelding", JOptionPane.ERROR_MESSAGE);
+                    }
         }
     }
 }
