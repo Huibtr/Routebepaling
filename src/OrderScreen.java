@@ -15,11 +15,15 @@ public class OrderScreen extends JFrame implements ActionListener {
     private JButton JBSearch;
 
     public OrderScreen() {
+        //Lijst met bestellingen vullen
         getOrder();
+
+        //Layout wijzigen
         this.setTitle("NerdyGadgets - Bestellingen");
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
+        //Buttons,labels en een tekstvak toevoegen
         JBterug = new JButton("\uD83E\uDC80 terug");
         JBterug.addActionListener(this);
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -42,6 +46,7 @@ public class OrderScreen extends JFrame implements ActionListener {
         JBSearch.addActionListener(this);
         add(JBSearch);
 
+        //Nieuwe tabel aanmaken
         JTable table = new JTable();
         DefaultTableModel model = new DefaultTableModel();
         Object[] columnsName = new Object[] {
@@ -56,19 +61,20 @@ public class OrderScreen extends JFrame implements ActionListener {
             model.addRow(rowData);
         }
         table.setModel(model);
-        //add the table to the frame
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.ipady = 200;      //make this component tall
+        c.ipady = 200;
         c.weightx = 0.0;
         c.gridwidth = 4;
         c.gridx = 0;
         c.gridy = 1;
+        //Tabel toevoegen aan het scherm
         add(new JScrollPane(table), c);
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
         this.setVisible(true);
 
+        //Ervoor zorgen dat je op de rijen in de tabel kunt klikken en dan naar een specifieke pagina gaat
         ListSelectionModel modelclick = table.getSelectionModel();
         modelclick.addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -83,6 +89,7 @@ public class OrderScreen extends JFrame implements ActionListener {
                     }
                     try {
                         if (listSelectionEvent.getValueIsAdjusting()) {
+                            //Nieuwe specifieke pagina openen
                             OrderInfoScreen orderInfoScreen = new OrderInfoScreen(orderID);
                         }
                     } catch (SQLException e) {
@@ -95,21 +102,21 @@ public class OrderScreen extends JFrame implements ActionListener {
     }
 
     public void getOrder(){
-
+        //Lijst met bestellingen aanmaken
         orders = new ArrayList<>();
         Order order;
-        try {
 
+        try {
+            //Nieuwe databaseconnectie aanmaken
             DBConnection dbConnection = new DBConnection();
             ResultSet rs = dbConnection.getOrderlines();
 
+            //Lijst met bestellingen vullen met gegevens uit de database
             while(rs.next()){
-
                 order = new Order(
                         rs.getInt("CustomerID"),
                         rs.getInt("OrderID")
                 );
-
                 orders.add(order);
             }
 
@@ -121,6 +128,7 @@ public class OrderScreen extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        //Knoppen werkend maken
         if (e.getSource() == JBterug) {
             dispose();
             DataScreen dataScreen = new DataScreen();
@@ -132,6 +140,7 @@ public class OrderScreen extends JFrame implements ActionListener {
                 for (Order o : orders) {
                     if (o.getOrderID() == Integer.parseInt(JTinputSearchCustomerID.getText())) {
                         try {
+                            //Nieuwe specifieke pagina openen
                             OrderInfoScreen orderInfoScreen = new OrderInfoScreen(Integer.parseInt(JTinputSearchCustomerID.getText()));
                             heeftSchermGeopend = true;
                         } catch (SQLException ex) {
@@ -140,10 +149,12 @@ public class OrderScreen extends JFrame implements ActionListener {
                     }
                 }
             }catch (NumberFormatException nfe) {
+                //Foutmelding teruggeven
                 JOptionPane.showMessageDialog(null, "Getal invoeren!", "Foutmelding", JOptionPane.ERROR_MESSAGE);
                 foutmelding = true;
             }
             if (heeftSchermGeopend == false && foutmelding == false) {
+                //Foutmelding teruggeven
                 JOptionPane.showMessageDialog(null, "Verkeerde invoer!", "Foutmelding", JOptionPane.ERROR_MESSAGE);
             }
         }
