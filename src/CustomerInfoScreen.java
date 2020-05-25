@@ -22,10 +22,14 @@ public class CustomerInfoScreen extends JFrame {
     private ArrayList<Integer> openstaandeBestellingen;
 
     public CustomerInfoScreen(int customerID, String previousScreen) throws SQLException {
+        //customerID opslaan
         this.customerID = customerID;
+
+        //Nieuwe databaseconnectie aanmaken
         DBConnection dbConnection = new DBConnection();
         ResultSet resultSet = dbConnection.getCustomersInfo(customerID);
 
+        //Variabelen vullen met de gegevens van de database
         while (resultSet.next()) {
             customerID = resultSet.getInt("CustomerID");
             customerName = resultSet.getString("CustomerName");
@@ -34,10 +38,13 @@ public class CustomerInfoScreen extends JFrame {
             deliveryPostalCode = resultSet.getString("DeliveryPostalCode");
             phoneNumber = resultSet.getString("PhoneNumber");
         }
+
+        //Layout wijzigen
         setTitle("NerdyGadgets - " + customerName);
         setSize(500, 500);
         setLayout(new GridLayout(7, 2));
 
+        //Labels toevoegen aan het scherm
         JLabel JLcustomerID = new JLabel("Klantnummer:");
         add(JLcustomerID);
 
@@ -74,6 +81,7 @@ public class CustomerInfoScreen extends JFrame {
         JLabel JLgetPhoneNumber = new JLabel(phoneNumber);
         add(JLgetPhoneNumber);
 
+        //Extra tabel, die alleen zichtbaar is wanneer je dit scherm heb geopend via het routeScherm
         if (previousScreen.equals("RoutingScreen")) {
             vulOpenstaandeBestellingenLijst(this.customerID);
             table = new JTable();
@@ -84,7 +92,7 @@ public class CustomerInfoScreen extends JFrame {
             model.setColumnIdentifiers(columnsName);
             maakTabel();
 
-            //add the table to the frame
+            //Tabel toevoegen aan scherm
             this.add(new JScrollPane(table), BorderLayout.PAGE_END);
         }
 
@@ -92,6 +100,7 @@ public class CustomerInfoScreen extends JFrame {
     }
 
     public void maakTabel() {
+        //Tabel vullen met gegevens
         try {
             rowData = new Object[1];
 
@@ -107,9 +116,14 @@ public class CustomerInfoScreen extends JFrame {
     }
 
     public void vulOpenstaandeBestellingenLijst(int customer_ID) throws SQLException {
+        //Lijst met openstaande bestellingen aanmaken
         openstaandeBestellingen = new ArrayList<>();
+
+        //Nieuwe databaseconnectie aanmaken
         DBConnection dbConnection = new DBConnection();
         ResultSet rs = dbConnection.getOrdersFromCustomer(customer_ID);
+
+        //Lijst met openstaande bestellingen vullen
         while (rs.next()) {
             openstaandeBestellingen.add(rs.getInt("OrderID"));
         }

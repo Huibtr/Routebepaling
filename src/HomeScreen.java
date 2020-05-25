@@ -8,11 +8,13 @@ public class HomeScreen extends JFrame implements ActionListener {
     private JButton jbRoute;
 
     public HomeScreen() {
+        //Layout wijzigen
         setTitle("Nerdy Gadgets");
         setSize(500, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new GridLayout(2,1));
 
+        //Buttons toevoegen
         jbData = new JButton("Gegevens inzien");
         jbData.addActionListener(this);
         add(jbData);
@@ -21,10 +23,12 @@ public class HomeScreen extends JFrame implements ActionListener {
         jbRoute.addActionListener(this);
         add(jbRoute);
 
+        //Scherm zichtbaar maken
         setVisible(true);
     }
     @Override
     public void actionPerformed(ActionEvent e) {
+        //Knoppen werkend maken
         if(e.getSource() == jbData){
             DataScreen dataScreen = new DataScreen();
             dispose();

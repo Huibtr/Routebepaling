@@ -1,4 +1,5 @@
 public class Customer {
+    //Variabelen aanmaken
     private int customerID;
     private String customerName;
     private String cityName;
@@ -7,6 +8,7 @@ public class Customer {
     private String phoneNumber;
 
     public Customer (int customerID, String customerName,  String cityName, String deliveryAddressLine2, String deliveryPostalCode, String phoneNumber) {
+        //Ingevoerde variabelen opslaan
         this.customerID = customerID;
         this.customerName = customerName;
         this.cityName = cityName;
@@ -16,6 +18,7 @@ public class Customer {
     }
 
     //region Getters
+    //Functies om de variabelen op te halen
     public int getCustomerID() {
         return customerID;
     }

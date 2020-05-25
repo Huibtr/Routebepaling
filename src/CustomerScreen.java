@@ -15,11 +15,15 @@ public class CustomerScreen extends JFrame implements ActionListener {
     private JButton JBSearch;
 
     public CustomerScreen() {
+        //Lijst met klanten vullen
         getCustomer();
+
+        //Layout wijzigen
         this.setTitle("NerdyGadgets - Klanten");
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
+        //Buttons, labels en een tekstvak toevoegen aan het scherm
         JBterug = new JButton("\uD83E\uDC80 terug");
         JBterug.addActionListener(this);
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -42,6 +46,7 @@ public class CustomerScreen extends JFrame implements ActionListener {
         JBSearch.addActionListener(this);
         add(JBSearch);
 
+        //Nieuwe tabel aanmaken
         JTable table = new JTable();
         DefaultTableModel model = new DefaultTableModel();
         Object[] columnsName = new Object[] {
@@ -55,19 +60,20 @@ public class CustomerScreen extends JFrame implements ActionListener {
             model.addRow(rowData);
         }
         table.setModel(model);
-        //add the table to the frame
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.ipady = 200;      //make this component tall
+        c.ipady = 200;
         c.weightx = 0.0;
         c.gridwidth = 4;
         c.gridx = 0;
         c.gridy = 1;
+        //Tabel toevoegen aan het scherm
         add(new JScrollPane(table), c);
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
         this.setVisible(true);
 
+        //Ervoor zorgen dat je op de rijen in de tabel kunt klikken en dan naar een specifieke pagina gaat
         ListSelectionModel modelclick = table.getSelectionModel();
         modelclick.addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -82,6 +88,7 @@ public class CustomerScreen extends JFrame implements ActionListener {
                     }
                     try {
                         if (listSelectionEvent.getValueIsAdjusting()) {
+                            //Nieuwe specifieke pagina openen
                             CustomerInfoScreen customerInfoScreen = new CustomerInfoScreen(customerID, "CustomerScreen");
                         }
                     } catch (SQLException e) {
@@ -92,11 +99,16 @@ public class CustomerScreen extends JFrame implements ActionListener {
         });
     }
     public void getCustomer(){
+        //Lijst met klanten aanmaken
         customers = new ArrayList<>();
         Customer customer;
+
         try {
+            //Nieuwe databaseconnectie aanmaken
             DBConnection dbConnection = new DBConnection();
             ResultSet rs = dbConnection.getCustomers();
+
+            //Lijst met klanten vullen met gegevens uit de database
             while(rs.next()){
                 customer = new Customer(
                         rs.getInt("CustomerID"),
@@ -115,6 +127,7 @@ public class CustomerScreen extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        //Knoppen werkend maken
         if (e.getSource() == JBterug) {
             dispose();
             DataScreen dataScreen = new DataScreen();
@@ -126,6 +139,7 @@ public class CustomerScreen extends JFrame implements ActionListener {
                     for (Customer c : customers) {
                             if (c.getCustomerID() == Integer.parseInt(JTinputSearchCustomerID.getText())) {
                                 try {
+                                    //Nieuwe specifieke pagina openen
                                     CustomerInfoScreen customerInfoScreen = new CustomerInfoScreen(Integer.parseInt(JTinputSearchCustomerID.getText()), "CustomerScreen");
                                     heeftSchermGeopend = true;
                                 } catch (SQLException ex) {
@@ -134,10 +148,12 @@ public class CustomerScreen extends JFrame implements ActionListener {
                             }
                 }
             }catch (NumberFormatException nfe) {
+                //Foutmelding teruggeven
                 JOptionPane.showMessageDialog(null, "Getal invoeren!", "Foutmelding", JOptionPane.ERROR_MESSAGE);
                 foutmelding = true;
             }
                     if (heeftSchermGeopend == false && foutmelding == false) {
+                        //Foutmelding teruggeven
                         JOptionPane.showMessageDialog(null, "Verkeerde invoer!", "Foutmelding", JOptionPane.ERROR_MESSAGE);
                     }
         }
