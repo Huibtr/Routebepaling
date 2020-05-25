@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
@@ -25,21 +26,43 @@ public class RoutingScreen extends JFrame implements ActionListener {
     private TSP tsp;
     private ArrayList<Hamiltonian> hamiltonians;
     private RoutingPanel panel;
+    private JLabel afstand;
+    private JTextField jtfTotalDistance;
 
 
     public RoutingScreen(){
         if(provincieNaam == null){
             provincieNaam = "Overijssel";
         }
+        JPanel userPanel = new JPanel();
+        userPanel.setLayout(new GridLayout(1,4));
+        afstand = new JLabel("0 km");
+        userPanel.add(afstand);
+
+        jtfTotalDistance = new JTextField("250", 10);
+        userPanel.add(jtfTotalDistance);
+
+        Border padding = BorderFactory.createEmptyBorder(10, 10, 10, 10);
+        userPanel.setBorder(padding);
+
         provinciesBox = new ComboBoxProvincies();
-        add(provinciesBox, BorderLayout.PAGE_START);
+        userPanel.add(provinciesBox);
+
+        //add(provinciesBox, BorderLayout.PAGE_START);
         comboBox = new JButton("Refresh");
         comboBox.addActionListener(this);
-        add(comboBox, BorderLayout.CENTER);
+        comboBox.setPreferredSize(new Dimension(100,5));
+
+
+        //add(comboBox, BorderLayout.CENTER);
+        userPanel.add(comboBox);
+
+
+        add(userPanel, BorderLayout.PAGE_START);
 
         setSize(530, 500);
         panel = new RoutingPanel(coordination, hamiltonians);
-        add(panel, BorderLayout.LINE_START);
+        add(panel);
 
         getRouteInfo(provincieNaam);
         table = new JTable();
@@ -142,10 +165,16 @@ public class RoutingScreen extends JFrame implements ActionListener {
             maakTabelLeeg();
             hamiltonian(provinciesBox.getProvincieNaam());
             panel.setHamiltonian(hamiltonians);
-            repaint();
+            if(hamiltonians.size() != 0 ){
+                afstand.setText(String.format("%.2f", hamiltonians.get((hamiltonians.size() - 1)).getTotaalAfstand()) + " km");
+            }else {
+                afstand.setText(Double.toString(0.00) + " km");
+            }
+
+
             getRouteInfo(provinciesBox.getProvincieNaam());
             maakTabel();
-
+            repaint();
 
 
 

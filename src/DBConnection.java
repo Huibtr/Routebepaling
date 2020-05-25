@@ -9,10 +9,15 @@ public class DBConnection {
     private String password = "";
     private ResultSet result;
 
+    public Connection getConnection() throws ClassNotFoundException, SQLException {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        Connection connection = DriverManager.getConnection(url, username, password);
+        return connection;
+    }
+
     public ResultSet getPassword(String hashPassword){
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection(url, username, password);
+            Connection connection = getConnection();
             Statement query = connection.createStatement();
 
             result = query.executeQuery("select Password, department, Username from employee where Password = \"" + hashPassword + "\" ;");
@@ -32,8 +37,7 @@ public class DBConnection {
 
     public ResultSet getCustomers(){
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection(url, username, password);
+            Connection connection = getConnection();
             Statement query = connection.createStatement();
 
              result = query.executeQuery("select CustomerID, CustomerName, CityName, DeliveryAddressLine2, DeliveryPostalCode, PhoneNumber from customers inner join cities where customers.DeliveryCityID =  cities.CityID;");
@@ -51,8 +55,7 @@ public class DBConnection {
 
     public ResultSet getCustomersInfo(int customerID){
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection(url, username, password);
+            Connection connection = getConnection();
             Statement query = connection.createStatement();
 
             result = query.executeQuery("select CustomerID, CustomerName, CityName, DeliveryAddressLine2, DeliveryPostalCode, PhoneNumber from customers inner join cities where customers.DeliveryCityID =  cities.CityID and customers.CustomerID ="+ customerID +";");
@@ -70,8 +73,7 @@ public class DBConnection {
 
     public ResultSet getOrderlines(){
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection(url, username, password);
+            Connection connection = getConnection();
             Statement query = connection.createStatement();
 
             result = query.executeQuery("SELECT distinct orders.CustomerID, orders.OrderID FROM orders Where CustomerID < 4;");
@@ -89,8 +91,7 @@ public class DBConnection {
 
     public ResultSet getOrdersInfo(int orderID){
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection(url, username, password);
+            Connection connection = getConnection();
             Statement query = connection.createStatement();
 
             result = query.executeQuery("SELECT orders.CustomerID, orders.OrderID, orderlines.StockitemID, orderlines.Quantity FROM orderlines LEFT JOIN orders ON orders.OrderID=orderlines.OrderID Where CustomerID < 4 and orders.OrderID =" + orderID + ";");
@@ -108,8 +109,7 @@ public class DBConnection {
 
     public ResultSet getStockitem(int orderID){
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection(url, username, password);
+            Connection connection = getConnection();
             Statement query = connection.createStatement();
 
             result = query.executeQuery("SELECT StockItemID, Description, PickedQuantity FROM orderlines where OrderID = " + orderID + ";");
@@ -127,8 +127,7 @@ public class DBConnection {
 
     public ResultSet getQuantity(){
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection(url, username, password);
+            Connection connection = getConnection();
             Statement query = connection.createStatement();
 
             result = query.executeQuery("SELECT StockItemID, StockItemName FROM stockitems ORDER BY StockItemID;");
@@ -146,8 +145,7 @@ public class DBConnection {
 
     public ResultSet getQuantityInfo(int StockItemID){
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection(url, username, password);
+            Connection connection = getConnection();
             Statement query = connection.createStatement();
 
             result = query.executeQuery("SELECT stockitems.StockItemName, stockitems.StockItemID, stockitemholdings.QuantityOnHand FROM stockitems JOIN stockitemholdings ON stockitems.StockItemID = stockitemholdings.StockItemID WHERE stockitems.StockItemID = " + StockItemID + ";");
@@ -165,8 +163,7 @@ public class DBConnection {
 
     public ResultSet getCoordinates(String provicie){
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection(url, username, password);
+            Connection connection = getConnection();
             Statement query = connection.createStatement();
 
             result = query.executeQuery("SELECT X,Y FROM address_coordinate\n" +
@@ -186,8 +183,7 @@ public class DBConnection {
 
     public ResultSet getRouteInfo(int x, int y){
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection(url, username, password);
+            Connection connection = getConnection();
             Statement query = connection.createStatement();
 
             result = query.executeQuery("SELECT DISTINCT customers.CustomerName, customers.DeliveryAddressLine2, cities.CityName, customers.customerID\n" +
@@ -211,8 +207,7 @@ public class DBConnection {
 
     public ResultSet getOrdersFromCustomer(int customerID){
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection(url, username, password);
+            Connection connection = getConnection();
             Statement query = connection.createStatement();
 
             result = query.executeQuery("SELECT OrderID FROM orders WHERE CustomerID = " + customerID + " ORDER BY OrderID");

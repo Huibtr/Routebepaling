@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import static java.lang.Math.*;
 
 public class TSP {
+    // maximale afstand dat een bezorger per adress mag afleggen
     private int maxDeliveryDistance = 1000;
     public ArrayList<Coordination> listCoordinates;
     //MST algoritme
@@ -32,12 +33,13 @@ public class TSP {
         DBConnection dbConnection = new DBConnection();
         ResultSet resultSet = dbConnection.getCoordinates(provicie);
 
-        //start reached van Nerdy Gadgets
+        //start punt van Nerdy Gadgets
         Coordination coordination;
         coordination = new Coordination(0,0);
         listCoordinates.add(coordination);
 
 
+        //haalt alle openstaande orders op met de daarbij hoorde x en y as
         while(resultSet.next()){
             int x = resultSet.getInt("X");
             int y = resultSet.getInt("Y");
@@ -46,6 +48,8 @@ public class TSP {
             listCoordinates.add(coordination);
         }
 
+
+        // schrijft alle cordinaten in de console
         getcordinaten();
     }
 
@@ -55,6 +59,10 @@ public class TSP {
         }
 
     }
+
+    /**
+     * maakt alle arraylisten leeg
+     */
     public void leegcoordinaten(){
         listCoordinates.clear();
         perfectRoute.clear();
@@ -64,7 +72,12 @@ public class TSP {
     }
 
 
-
+    /**
+     *
+     * @param provicie de provice die mee krijgt van het routingscreen
+     * @return een list van Hamiltonian deze lijst bevat de beste route die de bezorger kan rijden
+     * @throws SQLException
+     */
     public ArrayList<Hamiltonian> berekenAfstand(String provicie) throws SQLException {
         addcordinaten(provicie);
         //prim algoritme
@@ -75,8 +88,11 @@ public class TSP {
         isReached.add(0);
 
         //1. Prim algritme
+        // dit stuk van het algoritme kijkt per punt wel andere punt het dichtsbij ligt
         for (int eerste = 0; eerste < listCoordinates.size() - 1; eerste++) {
+            // distance onthoud de dichtsbijzijnde afstand per punt
             distance = maxDeliveryDistance;
+            // onderstaande for loopt door de punten die nog niet aanbod zijn geweest
             for (int reached = 0; reached < isReached.size(); reached++) {
                 skip = false;
                 for (int index = 0; index < listCoordinates.size(); index++) {
@@ -85,6 +101,7 @@ public class TSP {
                         for (int check = 0; check < isReached.size(); check++) {
                             int getcheck = isReached.get(check);
                             if (index == getcheck) {
+                                // het startpunt mag niet naar hetzelfde punt gaan
                                 skip = true;
                                 break;
                             } else {
@@ -92,8 +109,10 @@ public class TSP {
                             }
                         }
                         if (skip != true) {
+                            // berekend de afstand tussen het punt van de bezorger en het eind punt
                             double getDistance = getDistance(reachedIndex, index);
 
+                            // onthoud het dichtsbijzijnde punt
                             if (getDistance < distance) {
                                 distance = getDistance;
                                 begin = reachedIndex;
@@ -122,6 +141,7 @@ public class TSP {
         int teller;
         for (int indexOddDegree = 0; indexOddDegree < oddDegree.size(); indexOddDegree++) {
             teller = 0;
+            //berekend of een punt oneven aantal hoekpunten heeft.
             for (int i = 0; i < oddDegree.size(); i++) {
                 if (oddDegree.get(i) == indexOddDegree) {
                     teller = teller + 1;
@@ -138,7 +158,7 @@ public class TSP {
         ArrayList<PerfectMatch> savePerfectMatch = new ArrayList<>();
         System.out.println("\n//3. Perfect Matching");
         for (int alleIndexgebruiker = (perfectMatching.size()/2); alleIndexgebruiker < (perfectMatching.size()); alleIndexgebruiker--) {
-            double kortsteafstand = 1000;
+            double kortsteafstand = maxDeliveryDistance;
             int bIndex = 0;
             int eIndex = 0;
             int beginIndex = 0;
@@ -274,7 +294,7 @@ public class TSP {
                             break;
                         }else {
                             // dichtbijzijnde afstand
-                            double kleinsteAfstand = 1000;
+                            double kleinsteAfstand = maxDeliveryDistance;
                             int goToIndex = 0;
                             for(int geweesteIndex = 0; geweesteIndex < listMst.size(); geweesteIndex++){
                                 boolean isAlGeweest = false;
@@ -323,7 +343,7 @@ public class TSP {
                             break;
                         }else{
                             // dichtbijzijnde afstand
-                            double kleinsteAfstand = 1000;
+                            double kleinsteAfstand = maxDeliveryDistance;
                             int goToIndex = 0;
                             for(int geweesteIndex = 0; geweesteIndex < listMst.size(); geweesteIndex++){
                                 boolean isAlGeweest = false;
@@ -360,24 +380,32 @@ public class TSP {
             }
         }
 
+        double totalDistance = 0;
         for (int fillPerfectRoute = 0; fillPerfectRoute < listHamiltonian.size(); fillPerfectRoute++) {
             System.out.println(listHamiltonian.get(fillPerfectRoute).getBeginIndex() + " -> " + listHamiltonian.get(fillPerfectRoute).getEndIndex());
             int indexBegin = listHamiltonian.get(fillPerfectRoute).getBeginIndex();
             int indexEnd = listHamiltonian.get(fillPerfectRoute).getEndIndex();
+            double afstand = getDistance(indexBegin,indexEnd);
+            totalDistance = totalDistance + afstand;
             int beginX = listCoordinates.get(indexBegin).getX();
             int beginY = listCoordinates.get(indexBegin).getY();
             int endX = listCoordinates.get(indexEnd).getX();
             int endY = listCoordinates.get(indexEnd).getY();
-            Hamiltonian hamiltonian = new Hamiltonian(beginX, beginY, endX, endY);
-            perfectRoute.add(hamiltonian);
+            if(totalDistance < 1500){
+                Hamiltonian hamiltonian = new Hamiltonian(totalDistance, beginX, beginY, endX, endY);
+                perfectRoute.add(hamiltonian);
+            }
         }
-        System.out.println(perfectRoute);
         return perfectRoute;
 
 
     }
 
-
+    /**
+     * @param beginIndex punt van de bezorger
+     * @param endIndex punt waar de bezorger naar toe wilt
+     * @return een afstand wat tussen de punten zitten
+     */
     public double getDistance(int beginIndex, int endIndex){
         double distance;
 

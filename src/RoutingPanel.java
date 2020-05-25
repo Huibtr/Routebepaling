@@ -38,21 +38,22 @@ public class RoutingPanel extends JPanel {
                 System.out.println("leeg");
             } else {
                 for (int i = 0; i < hamiltonian.size(); i++) {
-                    System.out.println(hamiltonian);
+                    System.out.println("panel " + hamiltonian);
                    beginX = hamiltonian.get(i).getBeginX();
                    beginY = hamiltonian.get(i).getBeginY();
                    endX = hamiltonian.get(i).getEindX();
                    endY = hamiltonian.get(i).getEindY();
+
+                    System.out.println("X: " + beginX + " Y: " + beginY + " |  X: " + endX + " Y: " + endY);
                    g.setColor(Color.black);
-                   g.fillOval(beginX,beginY,1, 1);
-                   g.fillOval(endX, endY,1, 1);
-                   g.setColor(Color.blue);
+//                   g.fillOval(beginX,beginY,1, 1);
+//                   g.fillOval(endX, endY,1, 1);
+//                   g.setColor(Color.blue);
                    g.drawLine(beginX,beginY,endX,endY);
 
-
                 }
-                g.drawLine(0,0, beginX,beginY);
             }
+            g.drawLine(endX,endY,0,0);
         }
 
     public void setHamiltonian(ArrayList<Hamiltonian> hamiltonian) {
