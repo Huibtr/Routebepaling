@@ -182,31 +182,56 @@ public class RoutingScreen extends JFrame implements ActionListener {
             dispose();
         }
         if(e.getSource() == comboBox){
-            String selected = cmbDistance.getSelectedItem().toString();
-            totalDistance = Integer.parseInt(selected);
-            maakTabelLeeg();
-            hamiltonian(provinciesBox.getProvincieNaam());
-            panel.setHamiltonian(hamiltonians);
             if(hamiltonians.size() != 0 ){
+                String selected = cmbDistance.getSelectedItem().toString();
+                totalDistance = Integer.parseInt(selected);
+                maakTabelLeeg();
+                hamiltonian(provinciesBox.getProvincieNaam());
+                panel.setHamiltonian(hamiltonians);
                 afstand.setText(String.format("%.2f", hamiltonians.get((hamiltonians.size() - 1)).getTotaalAfstand()) + " km");
+                getRouteInfo(provinciesBox.getProvincieNaam());
+                maakTabel();
+                repaint();
             }else {
                 afstand.setText(Double.toString(0.00) + " km");
+                JOptionPane.showMessageDialog(null, "U heeft geen geldige route geselecteerd!");
             }
-
-
-            getRouteInfo(provinciesBox.getProvincieNaam());
-            maakTabel();
-            repaint();
         }
 
         if(e.getSource() == jbUpdateRoute){
-            DBUpdate dbUpdate = new DBUpdate();
-            try {
-                dbUpdate.InsertRouteArchive(hamiltonians.get((hamiltonians.size() - 1)).getTotaalAfstand(), hamiltonians);
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            } catch (ClassNotFoundException ex) {
-                ex.printStackTrace();
+            int dialogButton = JOptionPane.YES_NO_OPTION;
+            int dialogResult = JOptionPane.showConfirmDialog(this, "Weet u zeker dat u de route wilt bevestigen?", "Bevestig route", dialogButton);
+            if(dialogResult == 0) {
+                DBUpdate dbUpdate = new DBUpdate();
+                try {
+                    if(hamiltonians.size() != 0 ){
+                        System.out.println(hamiltonians.size());
+                        dbUpdate.InsertRouteArchive(hamiltonians.get((hamiltonians.size() - 1)).getTotaalAfstand(), hamiltonians);
+
+                        String selected = cmbDistance.getSelectedItem().toString();
+                        totalDistance = Integer.parseInt(selected);
+                        maakTabelLeeg();
+                        hamiltonian(provinciesBox.getProvincieNaam());
+                        panel.setHamiltonian(hamiltonians);
+                        if(hamiltonians.size() != 0 ){
+                            afstand.setText(String.format("%.2f", hamiltonians.get((hamiltonians.size() - 1)).getTotaalAfstand()) + " km");
+                        }else {
+                            afstand.setText(Double.toString(0.00) + " km");
+                        }
+                        getRouteInfo(provinciesBox.getProvincieNaam());
+                        maakTabel();
+                        repaint();
+                    }
+                    else{
+                        JOptionPane.showMessageDialog(null,"U heeft geen geldige route geselecteerd!");
+                    }
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                } catch (ClassNotFoundException ex) {
+                    ex.printStackTrace();
+                }catch (IndexOutOfBoundsException ex){
+                    ex.printStackTrace();
+                }
             }
         }
     }

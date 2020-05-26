@@ -50,7 +50,11 @@ public class RoutingPanel extends JPanel {
                    g.setColor(Color.black);
                    g.drawLine(beginX,beginY,endX,endY);
 
-                   g.drawString(String.valueOf(i + 1) , endX, endY);
+                   if(hamiltonian.size() > 2){
+                       g.drawString(String.valueOf(i + 1) , endX, endY);
+                   }else {
+                       g.drawString(String.valueOf(i) , endX, endY);
+                   }
                 }
             }
             g.drawLine(endX,endY,0,0);

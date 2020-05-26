@@ -161,59 +161,56 @@ public class TSP {
         ArrayList<PerfectMatch> savePerfectMatch = new ArrayList<>();
         System.out.println("\n//3. Perfect Matching");
         // loopt door de lijst van de oneven aantal hoekpunten die opregel 154 zijn toegevoegd
-        //if(perfectMatching.size() > 2) {
 
-            for (int alleIndexgebruiker = (perfectMatching.size() / 2); alleIndexgebruiker < (perfectMatching.size()); alleIndexgebruiker--) {
-                double kortsteafstand = maxDeliveryDistance;
-                int bIndex = 0;
-                int eIndex = 0;
-                int beginIndex = 0;
-                int endIndex = 0;
+        for (int alleIndexgebruiker = (perfectMatching.size() / 2); alleIndexgebruiker < (perfectMatching.size()); alleIndexgebruiker--) {
+            double kortsteafstand = maxDeliveryDistance;
+            int bIndex = 0;
+            int eIndex = 0;
+            int beginIndex = 0;
+            int endIndex = 0;
+            for (int perfectIndex = 0; perfectIndex < perfectMatching.size(); perfectIndex++) {
+
                 boolean isMatch = false;
-                for (int perfectIndex = 0; perfectIndex < perfectMatching.size(); perfectIndex++) {
+                for (int i = 0; i < perfectMatching.size(); i++) {
 
-                    isMatch = false;
-                    for (int i = 0; i < perfectMatching.size(); i++) {
+                    if (perfectIndex != i) {
+                        double afstand = getDistance(perfectMatching.get(perfectIndex), perfectMatching.get(i));
+                        if (afstand < kortsteafstand) {
 
-                        if (perfectIndex != i) {
-                            double afstand = getDistance(perfectMatching.get(perfectIndex), perfectMatching.get(i));
-                            if (afstand < kortsteafstand) {
-
-                                //als de route van de punten het dezelfde als de route van de MST dan moet die een ander punt pakken
-                                for (int isMST = 0; isMST < listMst.size(); isMST++) {
-                                    if (listMst.get(isMST).getBeginIndex() == perfectMatching.get(perfectIndex) && listMst.get(isMST).getEndIndex() == perfectMatching.get(i)) {
-                                        isMatch = true;
-                                        break;
-                                    } else if (listMst.get(isMST).getEndIndex() == perfectMatching.get(perfectIndex) && listMst.get(isMST).getBeginIndex() == perfectMatching.get(i)) {
-                                        isMatch = true;
-                                        break;
-                                    }
+                            //als de route van de punten het dezelfde als de route van de MST dan moet die een ander punt pakken
+                            for (int isMST = 0; isMST < listMst.size(); isMST++) {
+                                if (listMst.get(isMST).getBeginIndex() == perfectMatching.get(perfectIndex) && listMst.get(isMST).getEndIndex() == perfectMatching.get(i)) {
+                                    isMatch = true;
+                                    break;
+                                } else if (listMst.get(isMST).getEndIndex() == perfectMatching.get(perfectIndex) && listMst.get(isMST).getBeginIndex() == perfectMatching.get(i)) {
+                                    isMatch = true;
+                                    break;
                                 }
-                                if (isMatch == false) {
-                                    kortsteafstand = afstand;
-                                    bIndex = perfectIndex;
-                                    eIndex = i;
-                                    beginIndex = perfectMatching.get(perfectIndex);
-                                    endIndex = perfectMatching.get(i);
-                                }
+                            }
+                            if (isMatch == false) {
+                                kortsteafstand = afstand;
+                                bIndex = perfectIndex;
+                                eIndex = i;
+                                beginIndex = perfectMatching.get(perfectIndex);
+                                endIndex = perfectMatching.get(i);
                             }
                         }
                     }
                 }
-                PerfectMatch perfectMatch = new PerfectMatch(beginIndex, endIndex);
-                savePerfectMatch.add(perfectMatch);
-                System.out.println(beginIndex + "->" + endIndex + " = " + kortsteafstand);
-
-                perfectMatching.remove(bIndex);
-                if (eIndex == 0) {
-                    perfectMatching.remove(eIndex);
-                } else {
-                    perfectMatching.remove(eIndex - 1);
-                }
-
-
             }
-        //}
+            PerfectMatch perfectMatch = new PerfectMatch(beginIndex, endIndex);
+            savePerfectMatch.add(perfectMatch);
+            System.out.println(beginIndex + "->" + endIndex + " = " + kortsteafstand);
+
+            perfectMatching.remove(bIndex);
+            if (eIndex == 0) {
+                perfectMatching.remove(eIndex);
+            } else {
+                perfectMatching.remove(eIndex - 1);
+            }
+
+
+        }
 
         //Hamiltonian Circuit
         System.out.println("\nHamiltonian Circuit ");

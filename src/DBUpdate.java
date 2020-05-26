@@ -1,3 +1,4 @@
+import javax.swing.*;
 import javax.xml.crypto.Data;
 import java.sql.*;
 import java.text.SimpleDateFormat;
@@ -77,9 +78,8 @@ public class DBUpdate {
                     System.err.println(e.getMessage());
                 }
             }
-
-            System.out.println(" klant " + setRouteLine + " : " + customerID);
         }
+        JOptionPane.showMessageDialog(null,"Uw route is bevestigd!");
     }
 
     public void UpdateOrders(int orderID, Connection conn) throws SQLException {
