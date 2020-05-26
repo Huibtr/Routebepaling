@@ -75,16 +75,18 @@ public class TSP {
     /**
      *
      * @param provicie de provice die mee krijgt van het routingscreen
+     * @param maxTotalDistance de totale afstand dat de bezorgen op die dag wil rijden.
      * @return een list van Hamiltonian deze lijst bevat de beste route die de bezorger kan rijden
      * @throws SQLException
      */
-    public ArrayList<Hamiltonian> berekenAfstand(String provicie) throws SQLException {
+    public ArrayList<Hamiltonian> berekenAfstand(String provicie, int maxTotalDistance) throws SQLException {
         addcordinaten(provicie);
         //prim algoritme
         double distance;
-        int kosteIndex = 0;
-        int begin = 0;
+        int eind_Index = 0;
+        int begin_Index = 0;
         boolean skip;
+        // 0 is de locatie van Nerdy gadgets
         isReached.add(0);
 
         //1. Prim algritme
@@ -115,8 +117,8 @@ public class TSP {
                             // onthoud het dichtsbijzijnde punt
                             if (getDistance < distance) {
                                 distance = getDistance;
-                                begin = reachedIndex;
-                                kosteIndex = index;
+                                begin_Index = reachedIndex;
+                                eind_Index = index;
                             }
                         }
                     }
@@ -124,21 +126,21 @@ public class TSP {
 
 
             }
-            System.out.println(begin + " -> " + kosteIndex + " = " + distance);
+            System.out.println(begin_Index + " -> " + eind_Index + " = " + distance);
 
-            //mst route
-            PerfectMatch cor = new PerfectMatch(begin, kosteIndex);
+            //mst route voegt begin index en eind index van de mst toe aan listMST
+            PerfectMatch cor = new PerfectMatch(begin_Index, eind_Index);
             listMst.add(cor);
+            isReached.add(eind_Index);
 
-            isReached.add(kosteIndex);
-
-            oddDegree.add(begin);
-            oddDegree.add(kosteIndex);
+            oddDegree.add(begin_Index);
+            oddDegree.add(eind_Index);
         }
 
 
         //2. Odd Degree Vertices
         int teller;
+        // loop door de lijst van oneven hoekpunten.
         for (int indexOddDegree = 0; indexOddDegree < oddDegree.size(); indexOddDegree++) {
             teller = 0;
             //berekend of een punt oneven aantal hoekpunten heeft.
@@ -147,6 +149,7 @@ public class TSP {
                     teller = teller + 1;
                 }
             }
+            // als de teller gelijk is aan een oneven getal dan voegt die hem toe in de Array perfectMachtching
             if (teller % 2 != 0) {
                 perfectMatching.add(indexOddDegree);
                 System.out.println(indexOddDegree);
@@ -157,64 +160,70 @@ public class TSP {
         //3. Perfect Matching
         ArrayList<PerfectMatch> savePerfectMatch = new ArrayList<>();
         System.out.println("\n//3. Perfect Matching");
-        for (int alleIndexgebruiker = (perfectMatching.size()/2); alleIndexgebruiker < (perfectMatching.size()); alleIndexgebruiker--) {
-            double kortsteafstand = maxDeliveryDistance;
-            int bIndex = 0;
-            int eIndex = 0;
-            int beginIndex = 0;
-            int endIndex = 0;
-            for (int perfectIndex = 0; perfectIndex < perfectMatching.size(); perfectIndex++) {
+        // loopt door de lijst van de oneven aantal hoekpunten die opregel 154 zijn toegevoegd
+        //if(perfectMatching.size() > 2) {
 
+            for (int alleIndexgebruiker = (perfectMatching.size() / 2); alleIndexgebruiker < (perfectMatching.size()); alleIndexgebruiker--) {
+                double kortsteafstand = maxDeliveryDistance;
+                int bIndex = 0;
+                int eIndex = 0;
+                int beginIndex = 0;
+                int endIndex = 0;
                 boolean isMatch = false;
-                for (int i = 0; i < perfectMatching.size(); i++) {
+                for (int perfectIndex = 0; perfectIndex < perfectMatching.size(); perfectIndex++) {
 
-                    if (perfectIndex != i) {
-                        double afstand = getDistance(perfectMatching.get(perfectIndex), perfectMatching.get(i));
-                        if (afstand < kortsteafstand) {
+                    isMatch = false;
+                    for (int i = 0; i < perfectMatching.size(); i++) {
 
-                            for(int isMST = 0; isMST< listMst.size(); isMST++){
-                                if(listMst.get(isMST).getBeginIndex() == perfectMatching.get(perfectIndex) && listMst.get(isMST).getEndIndex() == perfectMatching.get(i)){
-                                    isMatch =true;
-                                    break;
+                        if (perfectIndex != i) {
+                            double afstand = getDistance(perfectMatching.get(perfectIndex), perfectMatching.get(i));
+                            if (afstand < kortsteafstand) {
+
+                                //als de route van de punten het dezelfde als de route van de MST dan moet die een ander punt pakken
+                                for (int isMST = 0; isMST < listMst.size(); isMST++) {
+                                    if (listMst.get(isMST).getBeginIndex() == perfectMatching.get(perfectIndex) && listMst.get(isMST).getEndIndex() == perfectMatching.get(i)) {
+                                        isMatch = true;
+                                        break;
+                                    } else if (listMst.get(isMST).getEndIndex() == perfectMatching.get(perfectIndex) && listMst.get(isMST).getBeginIndex() == perfectMatching.get(i)) {
+                                        isMatch = true;
+                                        break;
+                                    }
                                 }
-                                else if(listMst.get(isMST).getEndIndex() == perfectMatching.get(perfectIndex) && listMst.get(isMST).getBeginIndex() == perfectMatching.get(i)){
-                                    isMatch =true;
-                                    break;
+                                if (isMatch == false) {
+                                    kortsteafstand = afstand;
+                                    bIndex = perfectIndex;
+                                    eIndex = i;
+                                    beginIndex = perfectMatching.get(perfectIndex);
+                                    endIndex = perfectMatching.get(i);
                                 }
-                            }
-                            if (isMatch == false){
-                                kortsteafstand = afstand;
-                                bIndex = perfectIndex;
-                                eIndex = i;
-                                beginIndex = perfectMatching.get(perfectIndex);
-                                endIndex = perfectMatching.get(i);
                             }
                         }
                     }
                 }
+                PerfectMatch perfectMatch = new PerfectMatch(beginIndex, endIndex);
+                savePerfectMatch.add(perfectMatch);
+                System.out.println(beginIndex + "->" + endIndex + " = " + kortsteafstand);
+
+                perfectMatching.remove(bIndex);
+                if (eIndex == 0) {
+                    perfectMatching.remove(eIndex);
+                } else {
+                    perfectMatching.remove(eIndex - 1);
+                }
+
+
             }
-            PerfectMatch perfectMatch = new PerfectMatch(beginIndex, endIndex);
-            savePerfectMatch.add(perfectMatch);
-            System.out.println(beginIndex + "->" + endIndex + " = " + kortsteafstand);
-
-            perfectMatching.remove(bIndex);
-            if(eIndex == 0){
-                perfectMatching.remove(eIndex);
-            }else {
-                perfectMatching.remove(eIndex - 1);
-            }
-
-
-        }
-
+        //}
 
         //Hamiltonian Circuit
         System.out.println("\nHamiltonian Circuit ");
+        // 0 is het punt van Nerdy Gadgets
         int puntVanBezorger = 0;
         ArrayList<Integer> geweesteIndexen = new ArrayList<>();
         for(int rijLangAlleIndexen = 0; rijLangAlleIndexen < listCoordinates.size(); rijLangAlleIndexen ++){
             boolean isPerfectMatch = false;
             boolean setPerfectMatch = false;
+            // met de for loop lopen we we door de lijst van perfect matches die op regel 201 zijn tegevoegt
             for(int isErEenPerfectMatch = 0; isErEenPerfectMatch < savePerfectMatch.size(); isErEenPerfectMatch ++ ){
                 if(puntVanBezorger == savePerfectMatch.get(isErEenPerfectMatch).getBeginIndex() ){
                     if(geweesteIndexen.size() != 0){
@@ -228,6 +237,7 @@ public class TSP {
                                 System.out.println( savePerfectMatch.get(isErEenPerfectMatch).getBeginIndex() +" naar " + savePerfectMatch.get(isErEenPerfectMatch).getEndIndex());
                                 PerfectMatch perfectMatch = new PerfectMatch(savePerfectMatch.get(isErEenPerfectMatch).getBeginIndex(),savePerfectMatch.get(isErEenPerfectMatch).getEndIndex() );
                                 listHamiltonian.add(perfectMatch);
+                                // punt van de bezorger word nu het eindpunt
                                 puntVanBezorger = savePerfectMatch.get(isErEenPerfectMatch).getEndIndex();
                                 geweesteIndexen.add(savePerfectMatch.get(isErEenPerfectMatch).getBeginIndex());
                                 isPerfectMatch = true;
@@ -391,7 +401,7 @@ public class TSP {
             int beginY = listCoordinates.get(indexBegin).getY();
             int endX = listCoordinates.get(indexEnd).getX();
             int endY = listCoordinates.get(indexEnd).getY();
-            if(totalDistance < 1500){
+            if(totalDistance < maxTotalDistance){
                 Hamiltonian hamiltonian = new Hamiltonian(totalDistance, beginX, beginY, endX, endY);
                 perfectRoute.add(hamiltonian);
             }
@@ -419,7 +429,7 @@ public class TSP {
         }
 
         distance = sqrt(Math.pow(tussenberekening_x, 2) + Math.pow(tussenberekening_y, 2));
-
+        distance = distance / 10;
         return distance;
     }
 }

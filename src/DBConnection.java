@@ -168,7 +168,7 @@ public class DBConnection {
 
             result = query.executeQuery("SELECT X,Y FROM address_coordinate\n" +
                     "JOIN orders ON orders.CustomerID = address_coordinate.CustomerID\n" +
-                    "WHERE Provincie = \"" + provicie + "\"");
+                    "WHERE Provincie = \"" + provicie + "\" and IsPicked = " + 0);
 
         }
         catch (ClassNotFoundException ex){

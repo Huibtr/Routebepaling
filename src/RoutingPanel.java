@@ -37,6 +37,7 @@ public class RoutingPanel extends JPanel {
             if(hamiltonian == null){
                 System.out.println("leeg");
             } else {
+                g.setFont(new Font ("Courier New", 1, 20));
                 for (int i = 0; i < hamiltonian.size(); i++) {
                     System.out.println("panel " + hamiltonian);
                    beginX = hamiltonian.get(i).getBeginX();
@@ -44,13 +45,12 @@ public class RoutingPanel extends JPanel {
                    endX = hamiltonian.get(i).getEindX();
                    endY = hamiltonian.get(i).getEindY();
 
-                    System.out.println("X: " + beginX + " Y: " + beginY + " |  X: " + endX + " Y: " + endY);
+                   System.out.println("X: " + beginX + " Y: " + beginY + " |  X: " + endX + " Y: " + endY);
+
                    g.setColor(Color.black);
-//                   g.fillOval(beginX,beginY,1, 1);
-//                   g.fillOval(endX, endY,1, 1);
-//                   g.setColor(Color.blue);
                    g.drawLine(beginX,beginY,endX,endY);
 
+                   g.drawString(String.valueOf(i + 1) , endX, endY);
                 }
             }
             g.drawLine(endX,endY,0,0);

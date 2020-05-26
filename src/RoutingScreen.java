@@ -27,36 +27,52 @@ public class RoutingScreen extends JFrame implements ActionListener {
     private ArrayList<Hamiltonian> hamiltonians;
     private RoutingPanel panel;
     private JLabel afstand;
-    private JTextField jtfTotalDistance;
-
+    private int totalDistance;
+    private String[] distanceOption = {"25", "50", "75", "100", "125", "150", "175", "200", "225", "250" };
+    private JComboBox cmbDistance;
+    private JButton jbUpdateRoute;
 
     public RoutingScreen(){
         if(provincieNaam == null){
             provincieNaam = "Overijssel";
         }
         JPanel userPanel = new JPanel();
-        userPanel.setLayout(new GridLayout(1,4));
+        Border padding = BorderFactory.createEmptyBorder(10, 10, 10, 10);
+        userPanel.setBorder(padding);
+
+        userPanel.setLayout(new GridLayout(1,6));
+
+        jbBack = new JButton("\uD83E\uDC80 Uitloggen");
+        jbBack.addActionListener(this);
+        userPanel.add(jbBack);
+
+        JLabel jlNep = new JLabel(" ");
+        userPanel.add(jlNep);
+
         afstand = new JLabel("0 km");
         userPanel.add(afstand);
 
-        jtfTotalDistance = new JTextField("250", 10);
-        userPanel.add(jtfTotalDistance);
-
-        Border padding = BorderFactory.createEmptyBorder(10, 10, 10, 10);
-        userPanel.setBorder(padding);
+        cmbDistance = new JComboBox(distanceOption);
+        cmbDistance.setSelectedIndex(3);
+        cmbDistance.addActionListener(this);
+        userPanel.add(cmbDistance);
 
         provinciesBox = new ComboBoxProvincies();
         userPanel.add(provinciesBox);
 
         //add(provinciesBox, BorderLayout.PAGE_START);
-        comboBox = new JButton("Refresh");
+        comboBox = new JButton("Bereken afstand");
         comboBox.addActionListener(this);
-        comboBox.setPreferredSize(new Dimension(100,5));
+
 
 
         //add(comboBox, BorderLayout.CENTER);
         userPanel.add(comboBox);
 
+
+        jbUpdateRoute = new JButton("bevestig route");
+        jbUpdateRoute.addActionListener(this);
+        userPanel.add(jbUpdateRoute);
 
         add(userPanel, BorderLayout.PAGE_START);
 
@@ -148,10 +164,10 @@ public class RoutingScreen extends JFrame implements ActionListener {
         try {
             tsp = new TSP();
             if (hamiltonians == null){
-                hamiltonians = tsp.berekenAfstand(provincie);
+                hamiltonians = tsp.berekenAfstand(provincie, totalDistance);
             } else {
                 hamiltonians.clear();
-                hamiltonians = tsp.berekenAfstand(provincie);
+                hamiltonians = tsp.berekenAfstand(provincie,totalDistance);
             }
 
         } catch (SQLException e) {
@@ -161,7 +177,13 @@ public class RoutingScreen extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if(e.getSource() == jbBack){
+            LogInScreen logInScreen = new LogInScreen();
+            dispose();
+        }
         if(e.getSource() == comboBox){
+            String selected = cmbDistance.getSelectedItem().toString();
+            totalDistance = Integer.parseInt(selected);
             maakTabelLeeg();
             hamiltonian(provinciesBox.getProvincieNaam());
             panel.setHamiltonian(hamiltonians);
@@ -175,9 +197,17 @@ public class RoutingScreen extends JFrame implements ActionListener {
             getRouteInfo(provinciesBox.getProvincieNaam());
             maakTabel();
             repaint();
+        }
 
-
-
+        if(e.getSource() == jbUpdateRoute){
+            DBUpdate dbUpdate = new DBUpdate();
+            try {
+                dbUpdate.InsertRouteArchive(hamiltonians.get((hamiltonians.size() - 1)).getTotaalAfstand(), hamiltonians);
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            } catch (ClassNotFoundException ex) {
+                ex.printStackTrace();
+            }
         }
     }
     public void maakTabel() {
